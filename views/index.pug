@@ -1,0 +1,37 @@
+extends application
+
+block stylesheets
+    link(rel="stylesheet" href="/stylesheets/index.css")
+
+block content
+    div.container
+        div.row#main-row
+            div.col-2
+
+            div.col-8.shadow.bg-light#main-container
+                h3= text.heading
+                br
+
+                form(action="/auth/login" method="POST")
+                    div.input-group.login-field
+                        span.input-group-text
+                            i.bi-person
+                        input.form-control(id="username" name="username" type="text" placeholder="Username" required)
+
+                    div.input-group.login-field
+                        span.input-group-text
+                            i.bi-key
+                        input.form-control(id="password" name="password" type="password" placeholder="Password" required)
+
+                    div.separator
+
+                    div.d-flex.align-items-center
+                        button.btn.btn-primary(type="submit" style="margin-right: 1em")
+                            i.bi-box-arrow-in-right(style="margin-right: 0.6em")
+                            span= text.login
+
+                        div.form-check.d-inline-block.no-margin
+                                input.form-check-input(type="checkbox" value="" id="remember")
+                                label.form-check-label(for="remember")= text.rememberMe
+
+            div.col-2

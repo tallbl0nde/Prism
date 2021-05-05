@@ -1,0 +1,28 @@
+body, html {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    background-image: linear-gradient(to bottom right, rgb(100, 255, 255), rgb(70, 175, 255));
+}
+
+#main-container {
+    border: 1px solid lightgray;
+    border-radius: 1em;
+    padding: 1.5em;
+}
+
+#main-row {
+    padding-top: 20vh;
+}
+
+.login-field {
+    margin-bottom: 1em;
+}
+
+.separator {
+    border-top: 1px solid lightgray;
+    margin-top: 1.5em;
+    margin-bottom: 1.2em;
+}
