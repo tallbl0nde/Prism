@@ -11,6 +11,10 @@ html
         block stylesheets
 
     body
+        unless flash.length == 0
+            div
+                h6 Error: #{flash}
+
         block content
 
     //- Bootstrap JS

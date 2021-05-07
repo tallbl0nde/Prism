@@ -4,9 +4,11 @@ var router = express.Router();
 
 // Check login credentials
 router.post('/login', passport.authenticate('local', {
-    successRedirect: '/home',
-    failureRedirect: '/'
-}));
+        successRedirect: '/home',
+        failureRedirect: '/',
+        failureFlash: true
+    }),
+);
 
 router.get('/logout', function(req, res, next) {
     req.logout();
