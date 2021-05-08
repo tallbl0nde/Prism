@@ -167,10 +167,7 @@ app.use(passport.authenticate("remember-me"));
 // Load routers
 // --------------------------------------------------
 
-var authRouter = require('./routes/auth');
-var indexRouter = require('./routes/index');
-
-app.use('/auth', authRouter);
+const indexRouter = require('./routes/index');
 app.use('/', indexRouter);
 
 // --------------------------------------------------
