@@ -1,0 +1,42 @@
+body, html {
+    height: 100%;
+    margin: 0;
+}
+
+#avatar {
+    margin-right: 1em;
+    max-height: 2.5em;
+}
+
+#logo {
+    margin-bottom: 0;
+    max-width: 65%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#logo-container {
+    margin-bottom: 0 !important;
+}
+
+#pluginContent {
+    height: 100%;
+    max-height: 100%;
+    padding-left: 15em;
+}
+
+#sidebar {
+    height: 100%;
+    min-height: 100%;
+    position: fixed;
+    width: 15em;
+}
+
+.account-button {
+    color: silver;
+    margin-right: 0.5em;
+}
+
+.nav-link i {
+    margin-right: 1em;
+}

@@ -1,8 +1,40 @@
 extends application
 
-block content
-    h1 Home Page
-    h3 Logged in!
+block stylesheets
+    link(rel="stylesheet" href="/stylesheets/dashboard.css")
 
-    form(action="/logout" method="GET")
-        button(id="logout") Logout
+block content
+    div.d-flex.flex-column.p-3.text-white.bg-dark#sidebar
+        a(href="/").d-flex.align-items-center.mb-3.mb-md-0.me-md-auto.text-white.text-decoration-none#logo-container
+            img(src="images/logo.png")#logo
+        hr
+        ul.nav.nav-pills.flex-column.mb-auto
+            for plugin in plugins
+                li.nav-item
+                    if plugin.active
+                        a(href="#").nav-link.text-white.active
+                            i(class=plugin.icon)
+                            span= plugin.name
+                    else
+                        a(href=plugin.path).nav-link.text-white
+                            i(class=plugin.icon)
+                            span= plugin.name
+
+
+        hr
+
+        div.d-flex.align-items-center.text-white.text-decoration-none
+            img(src=user.image).rounded-circle#avatar
+            span
+                strong= user.username
+                div
+                    a(href="/account").account-button
+                        i.bi-gear
+                    a(href="/logout").account-button
+                        i.bi-box-arrow-left
+
+    div#pluginContent
+        h4 test
+        p more test
+
+        block pluginContent

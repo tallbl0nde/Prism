@@ -14,7 +14,16 @@ router.get('/', function(req, res, next) {
         return res.redirect('/login');
     }
 
-    res.locals.title = "Home Page";
+    // Test data
+    res.locals.plugins = [
+        {name: "Custom Images", icon: "bi-images", path: "/images", active: true},
+        {name: "Dynmap", icon: "bi-compass", path: "/map", active: false},
+        {name: "Plugin", icon: "bi-door-closed", path: "/something", active: false},
+    ];
+    res.locals.user = {
+        image: req.user.imagePath.replace("public/", ""),
+        username: req.user.username
+    }
     res.render('dashboard');
 });
 

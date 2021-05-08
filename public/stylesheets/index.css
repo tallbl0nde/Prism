@@ -7,6 +7,11 @@ body {
     background-image: linear-gradient(to bottom right, rgb(100, 255, 255), rgb(70, 175, 255));
 }
 
+#logo {
+    height: 2.5em;
+    margin-bottom: 1.5em;
+}
+
 #main-container {
     border: 1px solid lightgray;
     border-radius: 1em;
