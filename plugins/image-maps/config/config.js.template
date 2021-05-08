@@ -1,0 +1,6 @@
+const config = {
+    // Path to ImageMaps images folder
+    imagesPath: ""
+};
+
+module.exports = config;

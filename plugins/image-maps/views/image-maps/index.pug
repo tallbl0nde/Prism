@@ -1,0 +1,46 @@
+extends ../../../../views/dashboard
+
+block pluginStylesheets
+    link(rel="stylesheet" href="/image-maps/stylesheets/index.css")
+
+block pluginContent
+    nav.navbar.navbar-light.bg-light#top-navbar
+        div.container-fluid.align-items-center
+            span.navbar-brand.h1.m-0 Uploaded Images
+            div.ms-auto
+                ul.navbar-nav.list-group-horizontal
+                    li.nav-item
+                        a(href="#").nav-link.nav-option Your Images
+                    li.nav-item
+                        a(href="#").nav-link.nav-option All Images
+
+    if images.length == 0
+        div(style="padding-top: 40vh").text-center
+            p.text-secondary No images found. Upload some! :)
+    else
+        div.container#image-container
+            div.row.buffer-row
+            div.row.row-cols-2.row-cols-md-3.row-cols-lg-4
+                for image in images
+                    div.col
+                        div.card.w-75.h-100.mx-auto
+                            img(src=image.getPath).card-img-top
+                            div.card-body
+                                h6.card-title.m-0= image.name
+                                p.card-text.text-secondary= image.size
+                                div.d-flex#options
+                                    span.flex-grow-1
+                                    i.bi-pencil
+                                    i.bi-trash
+
+    nav.navbar.navbar-light.bg-light#bottom-navbar
+        div.container-fluid.align-items-center
+            span.navbar-brand.h1.m-0
+                button.btn.btn-primary
+                    i(style="margin-right: 0.5em").bi-cloud-arrow-up
+                    span Upload Image
+
+            div#storage
+                div(style="margin-top: 0 !important").fw-light.m-1 0.05 / 1 GB (0.5%)
+                div(style="height: 0.6em").progress
+                    div.progress-bar.w-50

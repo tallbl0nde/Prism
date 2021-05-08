@@ -2,11 +2,12 @@ extends application
 
 block stylesheets
     link(rel="stylesheet" href="/stylesheets/dashboard.css")
+    block pluginStylesheets
 
 block content
     div.d-flex.flex-column.p-3.text-white.bg-dark#sidebar
         a(href="/").d-flex.align-items-center.mb-3.mb-md-0.me-md-auto.text-white.text-decoration-none#logo-container
-            img(src="images/logo.png")#logo
+            img(src="/images/logo.png")#logo
         hr
         ul.nav.nav-pills.flex-column.mb-auto
             for plugin in plugins
@@ -34,7 +35,4 @@ block content
                         i.bi-box-arrow-left
 
     div#pluginContent
-        h4 test
-        p more test
-
         block pluginContent

@@ -2,7 +2,7 @@
 node_modules/
 
 # Don't upload config files, only the templates
-config/*.js
+**/config/*.js
 
 # Don't upload databases either
 *.db

@@ -9,21 +9,12 @@ var RememberMeToken = require('../models/remembermetoken');
 // Redirects to /login if not logged in.
 router.get('/', function(req, res, next) {
     // Redirect to login if not logged in
+    // TODO: Move outside router
     if (!req.isAuthenticated()) {
         req.flash('error', "You need to be logged in to view this page.");
         return res.redirect('/login');
     }
 
-    // Test data
-    res.locals.plugins = [
-        {name: "Custom Images", icon: "bi-images", path: "/images", active: true},
-        {name: "Dynmap", icon: "bi-compass", path: "/map", active: false},
-        {name: "Plugin", icon: "bi-door-closed", path: "/something", active: false},
-    ];
-    res.locals.user = {
-        image: req.user.imagePath.replace("public/", ""),
-        username: req.user.username
-    }
     res.render('dashboard');
 });
 

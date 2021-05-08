@@ -22,11 +22,42 @@ const config = {
 }
 
 // --------------------------------------------------
+// Find plugins
+// --------------------------------------------------
+
+// Array storing all plugins
+var plugins = [];
+
+// Get all folders in plugins folder
+let pluginDirs = fs.readdirSync("./plugins", {
+    withFileTypes: true
+}).filter(entry => entry.isDirectory());
+
+// Iterate over and parse plugin.js
+pluginDirs.forEach(dir => {
+    let abs = path.join(__dirname, "plugins", dir.name);
+    let plugin = require(path.join(abs, "plugin.js"));
+    plugins.push(plugin);
+});
+
+// Initialize plugins
+plugins.forEach(plugin => {
+    if (plugin.onInitialize != null) {
+        plugin.onInitialize();
+    }
+    console.log(`Plugin '${plugin.name}' initialized.`);
+});
+
+// --------------------------------------------------
 // Setup express
 // --------------------------------------------------
 
+let views = pluginDirs.map(pluginDir => path.join(__dirname, "plugins", pluginDir.name, "views"));
+views.push(path.join(__dirname, "views"));
+
 // view engine setup
 app.set('view engine', 'pug');
+app.set('views', views);
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -43,6 +74,11 @@ app.use(function (req, res, next) {
     next();
 });
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Use the public folders within each plugin
+plugins.forEach(plugin => {
+    app.use(express.static(plugin.static));
+});
 
 // --------------------------------------------------
 // Prepare database
@@ -167,8 +203,35 @@ app.use(passport.authenticate("remember-me"));
 // Load routers
 // --------------------------------------------------
 
+// Middleware to include plugin and user metadata for
+// dashboard pages
+app.use(function(req, res, next) {
+    // Append data if logged in
+    if (req.isAuthenticated()) {
+        res.locals.plugins = plugins.map(plugin => {
+            return {
+                name: plugin.name,
+                icon: plugin.icon,
+                path: plugin.path,
+                active: (plugin.path === req.path)
+            };
+        });
+        res.locals.user = {
+            image: req.user.imagePath.replace("public/", "/"),
+            username: req.user.username
+        }
+    }
+    return next();
+});
+
 const indexRouter = require('./routes/index');
 app.use('/', indexRouter);
+
+plugins.forEach(plugin => {
+    plugin.routers.forEach(router => {
+        app.use(plugin.path, router);
+    });
+});
 
 // --------------------------------------------------
 // Error handlers
