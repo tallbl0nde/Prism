@@ -9,8 +9,7 @@ block content
             div.col-2
 
             div.col-8.shadow.bg-light#main-container
-                h3= text.heading
-                br
+                img(src="images/logo.png")#logo
 
                 form(action="/auth/login" method="POST")
                     div.input-group.login-field
@@ -31,7 +30,7 @@ block content
                             span= text.login
 
                         div.form-check.d-inline-block.no-margin
-                                input.form-check-input(type="checkbox" value="" id="remember")
+                                input.form-check-input(type="checkbox" value="remember me" name="remember" id="remember")
                                 label.form-check-label(for="remember")= text.rememberMe
 
             div.col-2

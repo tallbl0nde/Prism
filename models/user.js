@@ -40,12 +40,12 @@ class User {
         user._inDB = false;
         user._id = null;
 
-        if (typeof (username) != "string") {
+        if (typeof(username) != "string") {
             throw new Error("Username must be a string.");
         }
         user._username = username;
 
-        if (typeof (password) != "string") {
+        if (typeof(password) != "string") {
             throw new Error("Password must be a string.");
         }
         user.setNewPassword(password);
@@ -53,12 +53,12 @@ class User {
         user._createdTimestamp = Math.floor(new Date().getTime() / 1000);
         user._failedLogins = 0;
 
-        if (typeof (isAdmin) != "boolean") {
+        if (typeof(isAdmin) != "boolean") {
             throw new Error("Admin flag must be a boolean.");
         }
         user._isAdmin = isAdmin;
 
-        if (typeof (imagePath) != "string") {
+        if (typeof(imagePath) != "string") {
             throw new Error("Image path must be a string.");
         }
         user._imagePath = imagePath;

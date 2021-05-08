@@ -7,9 +7,23 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
+
+var RememberMeToken = require('./models/remembermetoken');
 var User = require('./models/user');
 
 var app = express();
+
+// --------------------------------------------------
+// Read config values
+// --------------------------------------------------
+
+const config = {
+    secrets: require('./config/secrets')
+}
+
+// --------------------------------------------------
+// Setup express
+// --------------------------------------------------
 
 // view engine setup
 app.set('view engine', 'pug');
@@ -18,8 +32,16 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(session({secret: 'secrettext'}));
+app.use(session({
+    resave: false,
+    saveUninitialized: false,
+    secret: config.secrets.session
+}));
 app.use(flash());
+app.use(function (req, res, next) {
+    res.locals.flash = req.flash('error');
+    next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --------------------------------------------------
@@ -34,12 +56,12 @@ try {
         console.log("Database created.");
 
         // Create admin account
-        let admin = User.createNew("admin", "admin", true, "public/images/users/default.png");
+        let admin = User.createNew(config.secrets.admin.username, config.secrets.admin.password, true, "public/images/users/default.png");
         admin.save();
-        console.log("Admin account created. Login with username: admin, password: admin.")
+        console.log(`Admin account created. Login with username: ${admin.username}, password: ${config.secrets.admin.password}.`)
 
     } else {
-        console.log("Database already exists.");
+        console.log("Found existing database.");
     }
 
 } catch (err) {
@@ -56,16 +78,14 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var RememberMeStrategy = require('passport-remember-me').Strategy;
 
-app.use(passport.initialize());
-app.use(passport.session());
-
+// Use the 'local' passport.js strategy to manage authentication.
 passport.use(new LocalStrategy(
     function(username, password, done) {
         // Find a user with matching username
         let user = User.findByUsername(username);
         if (user === null) {
             done(null, false, {
-                message: `Unknown username: '${username}'.`
+                message: `Unknown username '${username}'.`
             });
             return;
         }
@@ -83,31 +103,41 @@ passport.use(new LocalStrategy(
     }
 ));
 
-// passport.use(new RememberMeStrategy(
-//     // Consume the token
-//     function (token, done) {
-//         // Get user id from tokens
-//         var uid = tokens[token];
-//         delete tokens[token];
+// Use the 'remember me' passport.js strategy to handle remembering sessions.
+passport.use(new RememberMeStrategy(
+    // Consume the token
+    function (token, done) {
+        // Get user ID for token
+        let token2 = RememberMeToken.findByToken(token);
+        if (token2 === null) {
+            return done(null, false, {
+                message: "Your 'Remember Me' session has expired. Please login again."
+            });
+        }
 
-//         // Return unsuccessful if no uid associated with token
-//         if (!uid) {
-//             return done(null, false);
-//         }
+        // Get user object for ID
+        let user = User.findByID(token2.userID);
+        if (user === null) {
+            return done(null, false, {
+                message: "Your 'Remember Me' session could not be found. Please login again."
+            });
+        }
 
-//         // Return user for id
-//         return done(null, "correct");
-//     },
+        // Delete token and pass user object along
+        token2.delete();
+        return done(null, user);
+    },
 
-//     // Generate new token
-//     function (user, done) {
-//         // Store user id with token
-//         var token = "thisisatesttoken";
-//         tokens[token] = user;
+    // Generate new token
+    function (user, done) {
+        // Create token and store in database
+        let token = new RememberMeToken(user.id)
+        token.save();
 
-//         return done(null, token);
-//     }
-// ));
+        // Pass token along
+        return done(null, token.token);
+    }
+));
 
 // Serialize a user object to it's ID
 passport.serializeUser(function(user, done) {
@@ -129,6 +159,10 @@ passport.deserializeUser(function(id, done) {
     done(null, user);
 });
 
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(passport.authenticate("remember-me"));
+
 // --------------------------------------------------
 // Load routers
 // --------------------------------------------------
@@ -136,10 +170,6 @@ passport.deserializeUser(function(id, done) {
 var authRouter = require('./routes/auth');
 var indexRouter = require('./routes/index');
 
-app.use(function (req, res, next) {
-    res.locals.flash = req.flash('error');
-    next();
-});
 app.use('/auth', authRouter);
 app.use('/', indexRouter);
 

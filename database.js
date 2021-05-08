@@ -46,10 +46,7 @@ function queryOne(statement, binds = {}) {
 
 // Executes the provided statement
 function query(statement, binds = {}) {
-    console.info("[DB] query: " + statement);
-    console.info("[DB] binds: " + JSON.stringify(binds));
-    let info = getConnection().prepare(statement).run(binds);
-    console.info("[DB] result: " + info);
+    getConnection().prepare(statement).run(binds);
 }
 
 // --------------------------------------------------

@@ -3,14 +3,13 @@ var router = express.Router();
 
 router.get('/', function(req, res, next) {
     // Redirect to home page if logged in
-    if (req.user) {
+    if (req.isAuthenticated()) {
         res.redirect('/home');
         return;
     }
 
     res.locals.title = "Index Page";
     res.locals.text = {
-        heading: "Minecraft Login",
         login: "Login",
         rememberMe: "Remember Me"
     };
@@ -20,7 +19,8 @@ router.get('/', function(req, res, next) {
 
 router.get('/home', function(req, res, next) {
     // Redirect to index page if not logged in
-    if (!req.user) {
+    if (!req.isAuthenticated()) {
+        req.flash('error', "You need to be logged in to view this page.");
         res.redirect('/');
         return;
     }
