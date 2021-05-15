@@ -228,8 +228,8 @@ const indexRouter = require('./routes/index');
 app.use('/', indexRouter);
 
 plugins.forEach(plugin => {
-    plugin.routers.forEach(router => {
-        app.use(plugin.path, router);
+    plugin.routers.forEach(pair => {
+        app.use(plugin.path + pair.prefix, pair.router);
     });
 });
 

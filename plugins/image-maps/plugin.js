@@ -12,8 +12,14 @@ const plugin = {
     // Routing
     path: "/imagemaps",
     routers: [
-        require('./routes/image'),
-        require('./routes/index')
+        {
+            prefix: '/images',
+            router: require('./routes/images')
+        },
+        {
+            prefix: '/',
+            router: require('./routes/index')
+        },
     ],
     static: path.join(__dirname, 'public'),
 
