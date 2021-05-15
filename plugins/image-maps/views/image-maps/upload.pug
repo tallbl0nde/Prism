@@ -1,5 +1,69 @@
 extends ../../../../views/dashboard
 
 block pluginStylesheets
+    link(rel="stylesheet" href="/image-maps/stylesheets/upload.css")
 
 block pluginContent
+    nav.navbar.navbar-light.bg-light#top-navbar
+        div.container-fluid.align-items-center
+            span.navbar-brand.h1.m-0 Upload Image
+
+    div.container#main-container
+        div.row
+            div.col-2
+
+            div.col-8
+                div(style="padding-top: 10vh")
+                form(action="/imagemaps/images" method="PUT")
+                    label(for="file").form-label Image
+                    div.d-flex.justify-content-center#image-div
+                        img(src="/images/noimage.png")#image
+                    input(type="file" name="file" onchange="updateImage(this)" accept="image/jpeg,image/png").form-control#file
+
+                    div.separator
+
+                    label(for="name").form-label Name
+                    div.input-group
+                        input(type="text" name="name" oninput="updateName()" maxlength="50").form-control#name
+                        span.input-group-text#extension .ext
+                    div.form-text This name will be used in-game to place the image. Only A-Z, a-z, 0-9, underscores and hyphens are allowed. Up to 50 characters are permitted.
+
+                    div.separator
+
+                    div.row
+                        div.col-4
+                            label(for="width") Width
+                            div.input-group
+                                input(type="number" min="0" max="1280" oninput="updateDimension(this)" name="width").form-control#width
+                                span.input-group-text px
+
+                        div.col-4
+                            label(for="height") Height
+                            div.input-group
+                                input(type="number" min="0" max="1280" oninput="updateDimension(this)" name="height").form-control#height
+                                span.input-group-text px
+
+                        div.col-4
+                            div.form-text#dimensions Choose an image to get dimension information.
+
+                    div.separator
+
+                    button(type="submit").btn.btn-primary#upload-button
+                        i(style="margin-right: 0.5em").bi-cloud-arrow-up
+                        span Upload!
+
+            div.col-2
+
+    nav.navbar.navbar-light.bg-light#bottom-navbar
+        div.container-fluid.align-items-center
+            span.navbar-brand.h1.m-0
+                a(href="/imagemaps/").btn.btn-primary
+                    i(style="margin-right: 0.5em").bi-arrow-left
+                    span Back
+
+            div#storage
+                div(style="margin-top: 0 !important").fw-light.m-1 0.05 / 1 GB (0.5%)
+                div(style="height: 0.6em").progress
+                    div.progress-bar.w-50
+
+    script(src="/image-maps/javascripts/upload.js")

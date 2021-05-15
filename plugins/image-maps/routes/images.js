@@ -5,9 +5,15 @@ var router = express.Router();
 
 var Image = require('../models/image');
 
-// PUT /images/:id
+// PUT /images/
 // [C]reate
-// TODO:
+router.put('/', function(req, res, next) {
+    // Create file on file system
+
+
+    let image = Image.createNew(req.body.name, req.body)
+    //TODO:
+});
 
 // GET /images
 // [R]ead

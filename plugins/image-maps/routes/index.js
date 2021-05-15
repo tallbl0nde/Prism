@@ -23,4 +23,10 @@ router.get('/', function(req, res, next) {
     res.render('image-maps/index');
 });
 
+// GET /upload
+// Renders the upload view.
+router.get('/upload', function(req, res, next) {
+    res.render('image-maps/upload');
+});
+
 module.exports = router;

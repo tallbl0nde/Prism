@@ -213,9 +213,10 @@ app.use(function(req, res, next) {
                 name: plugin.name,
                 icon: plugin.icon,
                 path: plugin.path,
-                active: (plugin.path === req.path)
+                active: req.path.includes(plugin.path)
             };
         });
+
         res.locals.user = {
             image: req.user.imagePath.replace("public/", "/"),
             username: req.user.username

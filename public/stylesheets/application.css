@@ -6,3 +6,9 @@
 .no-margin {
     margin: 0;
 }
+
+.separator {
+    border-top: 1px solid lightgray;
+    margin-top: 1.5em;
+    margin-bottom: 1.2em;
+}

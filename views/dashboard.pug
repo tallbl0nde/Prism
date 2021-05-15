@@ -13,7 +13,7 @@ block content
             for plugin in plugins
                 li.nav-item
                     if plugin.active
-                        a(href="#").nav-link.text-white.active
+                        a(href=plugin.path).nav-link.text-white.active
                             i(class=plugin.icon)
                             span= plugin.name
                     else
