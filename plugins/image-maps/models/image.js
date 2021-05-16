@@ -42,7 +42,7 @@ class Image {
         }
         image._fileName = fileName;
 
-        image._uploadDate = Math.floor(new Date.getTime() / 1000);
+        image._uploadDate = Math.floor(new Date().getTime() / 1000);
 
         if (typeof(size) != "number") {
             throw new Error("Size must be a number.");
@@ -150,38 +150,39 @@ class Image {
     // Saves in-memory changes to the database and filesystem.
     // Throws an error should one occur.
     save() {
+        let image = this;
         // Wrap all operations in transaction, causing database
         // to revert on FS error
         database.doInTransaction(function() {
             // Insert if not in database
-            if (this._inDB === false) {
+            if (image._inDB == false) {
                 database.query(`INSERT INTO Images (
                                 file_name, upload_date, size, user_id
                                 ) VALUES (
                                 $fileName, $uploadDate, $size, $userID
                                 );`, {
-                                    fileName: this._fileName,
-                                    uploadDate: this._uploadDate,
-                                    size: this._size,
-                                    userID: this._userID
+                                    fileName: image._fileName,
+                                    uploadDate: image._uploadDate,
+                                    size: image._size,
+                                    userID: image._userID
                                 });
 
             // Update entry otherwise
             } else {
                 // Rename file first
-                if (this._filename != this._newFileName) {
-                    fs.renameSync(path.join(config.imagesPath, this._fileName), path.join(config.imagesPath, this._newFileName));
+                if (image._filename != image._newFileName) {
+                    fs.renameSync(path.join(config.imagesPath, image._fileName), path.join(config.imagesPath, image._newFileName));
                 }
 
                 database.query(`UPDATE Images SET
                                 file_name = $fileName, upload_date = $uploadDate,
                                 size = $size, user_id = $userID
                                 WHERE id = $id;`, {
-                                    fileName: this._fileName,
-                                    uploadDate: this._uploadDate,
-                                    size: this._size,
-                                    userID: this._userID,
-                                    id: this._id
+                                    fileName: image._fileName,
+                                    uploadDate: image._uploadDate,
+                                    size: image._size,
+                                    userID: image._userID,
+                                    id: image._id
                                 });
             }
         });

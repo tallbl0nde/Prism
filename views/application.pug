@@ -12,15 +12,19 @@ html
 
     body
         //- Show flash messages at bottom
-        unless flash.length == 0
-            div.position-relative
+        if flash && flash.length > 0
+            div.position-relative#flash-div
                 div.toast-container.position-absolute.p-3.top-0.start-50.translate-middle-x
                     each message in flash
                         div(role="alert").toast.align-items-center
                             div.d-flex
                                 d.toast-body
-                                    i.bi-exclamation-diamond#flash-icon
-                                    span #{message}
+                                    if message.type === "error"
+                                        i.bi-exclamation-diamond#flash-icon
+                                    else if message.type === "info"
+                                        i.bi-info-circle#flash-icon
+
+                                    span #{message.message}
 
                                 button(type="button" data-bs-dismiss="toast").btn-close.me-2.m-auto
 

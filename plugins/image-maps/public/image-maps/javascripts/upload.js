@@ -6,10 +6,15 @@ function updateDimension(elm) {
     elm.value = value;
 
     // Update text
-    let elmW = document.getElementById("width");
-    let elmH = document.getElementById("height");
-    elm = document.getElementById("dimensions");
-    elm.textContent = `An image with these dimensions will require ${Math.ceil(elmW.value/128)} rows and ${Math.ceil(elmH.value/128)} columns.`;
+    updateDimensions();
+}
+
+// Updates the "this will require" text
+function updateDimensions() {
+    let elm = document.getElementById("dimensions");
+    let w = document.getElementById("width").value;
+    let h = document.getElementById("height").value;
+    elm.textContent = `An image with these dimensions will require ${Math.ceil(h/128)} rows and ${Math.ceil(w/128)} columns.`;
 }
 
 // Updates image related fields with the passed path.
@@ -21,6 +26,7 @@ function updateImage(event) {
             tmp.onload = () => {
                 // Display image
                 document.getElementById("image").setAttribute('src', tmp.src);
+                document.getElementById("data").value = tmp.src;
 
                 // Update dimensions
                 let elmW = document.getElementById("width");
@@ -40,9 +46,7 @@ function updateImage(event) {
 
                 elmW.value = w;
                 elmH.value = h;
-
-                let elm = document.getElementById("dimensions");
-                elm.textContent = `An image with these dimensions will require ${Math.ceil(w/128)} rows and ${Math.ceil(h/128)} columns.`;
+                updateDimensions();
 
                 // Update file name + extension
                 let filename = event.files[0].name;
@@ -52,6 +56,7 @@ function updateImage(event) {
                 elm.value = fixed.substring(0, elm.getAttribute('maxlength'));
 
                 document.getElementById("extension").textContent = `.${filename.split('.').pop()}`;
+                document.getElementById("extension-data").value = `.${filename.split('.').pop()}`;
             }
             tmp.src = e.target.result;
         };
@@ -64,4 +69,44 @@ function updateImage(event) {
 function updateName() {
     let elm = document.getElementById("name");
     elm.value = elm.value.replace(/[^a-zA-Z0-9-_]/g, "");
+}
+
+// Store form data on unload
+window.onbeforeunload = function() {
+    sessionStorage.setItem("image", document.getElementById("image").getAttribute("src"));
+    sessionStorage.setItem("extension", document.getElementById("extension").textContent);
+
+    let attrs = ["name", "width", "height"];
+    attrs.forEach(attr => {
+        sessionStorage.setItem(attr, document.getElementById(attr).value);
+    });
+}
+
+// Restore form data on load
+window.onload = function() {
+    let tmp = null;
+
+    tmp = sessionStorage.getItem("image");
+    if (tmp !== null) {
+        document.getElementById("image").setAttribute("src", tmp);
+        document.getElementById("data").value = tmp;
+    }
+
+    tmp = sessionStorage.getItem("extension");
+    if (tmp !== null) {
+        document.getElementById("extension").textContent = tmp;
+        document.getElementById("extension-data").value = tmp;
+    }
+
+    let attrs = ["name", "width", "height"];
+    attrs.forEach(attr => {
+        tmp = sessionStorage.getItem(attr);
+        if (tmp !== null) {
+            document.getElementById(attr).value = tmp;
+        }
+    });
+
+    if (document.getElementById("width").value) {
+        updateDimensions();
+    }
 }

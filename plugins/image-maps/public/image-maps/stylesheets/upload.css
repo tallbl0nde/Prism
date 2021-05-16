@@ -6,8 +6,14 @@
 }
 
 #image {
+    cursor: pointer;
     max-height: 30vh;
     max-width: 100%;
+    transition: all 200ms ease-out;
+}
+
+#image:hover {
+    opacity: 50%;
 }
 
 #image-div {
@@ -30,6 +36,10 @@
 
 #top-navbar {
     border-bottom: lightgray 1px solid;
+}
+
+.image-upload > input {
+    display: none;
 }
 
 input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
