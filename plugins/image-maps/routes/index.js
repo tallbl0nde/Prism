@@ -5,14 +5,70 @@ var router = express.Router();
 
 var Image = require('../models/image');
 
+// Helper to format bytes to a string
+// Won't work for >= 1024TB
+function formatBytes(bytes) {
+    let divs = 0;
+
+    while (bytes >= 1024) {
+        divs++;
+        bytes /= 1024;
+    }
+
+    let suffix = "";
+    switch (divs) {
+        case 0:
+            suffix = "B";
+            break;
+
+        case 1:
+            suffix = "KB";
+            break;
+
+        case 2:
+            suffix = "MB";
+            break;
+
+        case 3:
+            suffix = "GB";
+            break;
+
+        case 4:
+            suffix = "TB";
+            break;
+    }
+
+    // Round to one decimal place
+    bytes = Math.round((bytes + Number.EPSILON) * 10) / 10;
+    return `${bytes} ${suffix}`;
+}
+
+// Middleware to fetch user's images and calculate usage
+router.use(function(req, res, next) {
+    // Get list of the user's images
+    req.userImages = Image.findByUserID(req.user.id);
+
+    // Calculate usage
+    let bytes = req.userImages.map(image => {
+        return image.size;
+    }).reduce((a, b) => a + b, 0);
+
+    // Round percentage to two decimal places
+    let percentage = Math.round(((bytes/config.storageLimit) + Number.EPSILON) * 10000) / 100;
+    percentage = (percentage > 100 ? 100 : percentage);
+    res.locals.usage = {
+        percentage: percentage,
+        string: `${formatBytes(bytes)} / ${formatBytes(config.storageLimit)} (${percentage}%)`
+    }
+    next();
+});
+
 // GET /
 // Renders the main view, containing a list of images
 // uploaded by the currently logged in user.
 router.get('/', function(req, res, next) {
-    // Get list of the user's images
-    let images = Image.findByUserID(req.user.id);
-
-    res.locals.images = images.map(image => {
+    // Create images from
+    res.locals.images = req.userImages.map(image => {
         return {
             id: image.id,
             name: image.fileName,
@@ -20,8 +76,12 @@ router.get('/', function(req, res, next) {
             thumbnailPath: `/imagemaps/images/${image.id}/thumbnail`,
             path: path.join(config.imagesPath, image.fileName),
             size: image.size
-        }
+        };
     });
+
+    // Calculate the users' usage
+
+
     res.render('image-maps/index');
 });
 

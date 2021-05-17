@@ -29,7 +29,7 @@ block pluginContent
 
                     label(for="name").form-label Name
                     div.input-group
-                        input(type="text" name="name" oninput="updateName()" maxlength="50").form-control#name
+                        input(type="text" name="name" oninput="updateName()" maxlength="50" required).form-control#name
                         span.input-group-text#extension .ext
                         input(type="hidden" name="extension")#extension-data
                     div.form-text This name will be used in-game to place the image. Only A-Z, a-z, 0-9, underscores and hyphens are allowed. Up to 50 characters are permitted.
@@ -40,13 +40,13 @@ block pluginContent
                         div.col-4
                             label(for="width") Width
                             div.input-group
-                                input(type="number" min="0" max="1280" oninput="updateDimension(this)" name="width").form-control#width
+                                input(type="number" min="0" max="1280" oninput="updateDimension(this)" name="width" required).form-control#width
                                 span.input-group-text px
 
                         div.col-4
                             label(for="height") Height
                             div.input-group
-                                input(type="number" min="0" max="1280" oninput="updateDimension(this)" name="height").form-control#height
+                                input(type="number" min="0" max="1280" oninput="updateDimension(this)" name="height" required).form-control#height
                                 span.input-group-text px
 
                         div.col-4
@@ -68,8 +68,9 @@ block pluginContent
                     span Back
 
             div#storage
-                div(style="margin-top: 0 !important").fw-light.m-1 0.05 / 1 GB (0.5%)
+                div(style="margin-top: 0 !important").fw-light.m-1= usage.string
                 div(style="height: 0.6em").progress
-                    div.progress-bar.w-50
+                    div(style="width: " + usage.percentage + "%;").progress-bar
+
 
     script(src="/image-maps/javascripts/upload.js")

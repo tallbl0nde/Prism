@@ -44,9 +44,9 @@ block pluginContent
                     span Upload Image
 
             div#storage
-                div(style="margin-top: 0 !important").fw-light.m-1 0.05 / 1 GB (0.5%)
+                div(style="margin-top: 0 !important").fw-light.m-1= usage.string
                 div(style="height: 0.6em").progress
-                    div.progress-bar.w-50
+                    div(style="width: " + usage.percentage + "%;").progress-bar
 
     div.modal.fade#rename-modal
         div.modal-dialog

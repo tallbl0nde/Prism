@@ -1,6 +1,9 @@
 const config = {
     // Path to ImageMaps images folder
-    imagesPath: ""
+    imagesPath: "",
+
+    // Amount of storage allocated to each user, in bytes (defaults to 10MB)
+    storageLimit: 10485760
 };
 
 module.exports = config;
