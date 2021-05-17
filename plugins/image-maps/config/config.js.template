@@ -3,7 +3,16 @@ const config = {
     imagesPath: "",
 
     // Amount of storage allocated to each user, in bytes (defaults to 10MB)
-    storageLimit: 10485760
+    storageLimit: 10485760,
+
+    // Thumbnail settings
+    thumbnail: {
+        // Time to cache generated thumbnail for, in ms (defaults to 1 minute)
+        cacheMs: 60000,
+
+        // Resize to this height, aspect ratio is preserved
+        height: 200
+    }
 };
 
 module.exports = config;

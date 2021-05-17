@@ -20,21 +20,35 @@ block pluginContent
     else
         div.container#image-container
             div.row.buffer-row
-            div.row.row-cols-2.row-cols-md-3.row-cols-lg-4
+            div.row.row-cols-1.row-cols-lg-2
                 for image in images
-                    div.col
-                        div.card.w-75.h-100.mx-auto
-                            img(src=image.thumbnailPath).card-img-top
-                            div.card-body
-                                h6.card-title.m-0= image.name
-                                p.card-text.text-secondary= image.size
-                                div.d-flex.justify-content-evenly#options
-                                    a(href=image.downloadPath)
-                                        i.bi-cloud-download
-                                    a(data-bs-toggle="modal" data-bs-target="#rename-modal" data-id=image.id data-name=image.name href="#" onclick="prepareRenameModal(this)")
-                                        i.bi-pencil
-                                    a(data-bs-toggle="modal" data-bs-target="#delete-modal" data-id=image.id data-name=image.name href="#" onclick="prepareDeleteModal(this)")
-                                        i.bi-trash
+                    div.col.card-column.p-3
+                        div.card
+                            div.row.g-0
+                                div.col-4.image-parent
+                                    img(src="/image-maps/images/noimage.png" data-url=image.thumbnailPath).blur-image.uploaded-image
+                                    img(src="/image-maps/images/noimage.png" data-url=image.thumbnailPath).normal-image.uploaded-image
+
+                                div.col-8
+                                    div.card-body
+                                        h6.card-title= image.name
+                                        div
+                                            i.bi-hdd.pe-2.text-secondary
+                                            span.card-text.text-secondary= image.size
+                                        div
+                                            i.bi-clock.pe-2.text-secondary
+                                            span.card-text.text-secondary= image.uploadDate
+
+                                        div.d-flex.justify-content-evenly.options
+                                            a(href=image.downloadPath)
+                                                i(data-bs-toggle="tooltip" data-bs-placement="bottom" title="Download").bi-cloud-download
+                                            a(data-bs-toggle="modal" data-bs-target="#rename-modal" data-id=image.id data-name=image.name href="#" onclick="prepareRenameModal(this)")
+                                                i(data-bs-toggle="tooltip" data-bs-placement="bottom" title="Rename").bi-pencil
+                                            a(data-bs-toggle="modal" data-bs-target="#delete-modal" data-id=image.id data-name=image.name href="#" onclick="prepareDeleteModal(this)")
+                                                i(data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete").bi-trash
+            div.row.buffer-row
+            div.row.buffer-row
+            div.row.buffer-row
 
     nav.navbar.navbar-light.bg-light#bottom-navbar
         div.container-fluid.align-items-center

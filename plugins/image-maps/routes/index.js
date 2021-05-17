@@ -67,20 +67,25 @@ router.use(function(req, res, next) {
 // Renders the main view, containing a list of images
 // uploaded by the currently logged in user.
 router.get('/', function(req, res, next) {
-    // Create images from
+    // Create images from database
     res.locals.images = req.userImages.map(image => {
+        let d = new Date(image.uploadDate * 1000);
+
         return {
             id: image.id,
             name: image.fileName,
             downloadPath: `/imagemaps/images/${image.id}/download`,
             thumbnailPath: `/imagemaps/images/${image.id}/thumbnail`,
             path: path.join(config.imagesPath, image.fileName),
-            size: image.size
+            size: formatBytes(image.size),
+            uploadDate: `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear().toString().padStart(2, "0").substr(-2)} ${d.getHours()}:${d.getMinutes().toString().padStart(2, "0")}`
         };
     });
 
-    // Calculate the users' usage
-
+    // Sort alphabetically
+    res.locals.images.sort((first, second) => {
+        return first.name.toLowerCase().localeCompare(second.name.toLowerCase());
+    });
 
     res.render('image-maps/index');
 });

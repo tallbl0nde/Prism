@@ -1,9 +1,10 @@
-var config = require('../config/config');
-var express = require('express');
-var fs = require('fs');
-var path = require('path');
-var router = express.Router();
-var sharp = require('sharp');
+const cache = require('memory-cache');
+const config = require('../config/config');
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
+const router = express.Router();
+const sharp = require('sharp');
 
 var Image = require('../models/image');
 
@@ -83,17 +84,10 @@ router.post('/', function(req, res, next) {
             return res.redirect('/imagemaps');
         })
         .catch(err => {
-            console.log(err);
+            console.log(err.message);
             req.flash('error', "An internal server error occurred. Please try again later.");
             return res.redirect('/imagemaps/upload');
         });
-});
-
-// GET /images
-// [R]ead
-// Returns all stored images for the logged in user.
-router.get('/', function (req, res, next) {
-
 });
 
 // GET /images/:id/download
@@ -126,14 +120,38 @@ router.get('/:id/thumbnail', function(req, res, next) {
         return res.sendFile(path.join(__dirname, '../public/image-maps/images/noimage.png'));
     }
 
+    // Check cache for resized image, send if present
+    let data = cache.get(`image-${image.id}-thumbnail`);
+    if (data != null) {
+        res.writeHead(200, {
+            "Content-Type": "image/jpeg",
+            "Content-Length": data.length
+        });
+        return res.end(Buffer.from(data, "base64"));
+    }
+
+    // Otherwise resize image and cache
     let fullpath = path.join(config.imagesPath, image.fileName);
     if (!fs.existsSync(fullpath)) {
         return res.sendFile(path.join(__dirname, '../public/image-maps/images/noimage.png'));
     }
 
-    // TODO: Resize
-
-    res.sendFile(fullpath);
+    sharp(fullpath)
+        .resize({ height: config.thumbnail.height })
+        .jpeg()
+        .toBuffer()
+        .then(data => {
+            cache.put(`image-${image.id}-thumbnail`, data, config.thumbnail.cacheMs);
+            res.writeHead(200, {
+                "Content-Type": "image/jpeg",
+                "Content-Length": data.length
+            });
+            return res.end(Buffer.from(data, "base64"));
+        })
+        .catch(err => {
+            console.log(err.message);
+            return res.sendFile(path.join(__dirname, '../public/image-maps/images/noimage.png'));
+        });
 });
 
 // POST /images/:id
@@ -146,12 +164,18 @@ router.post('/:id', function(req, res, next) {
         return res.sendStatus(404);
     }
 
+    // Only let the user who created it rename it
+    if (image.userID != req.user.id) {
+        return res.sendStatus(403);
+    }
+
     // Sanitize name
     req.body.name = req.body.name.replace(/[^a-zA-Z0-9-_]/g, "");
     req.body.name = req.body.name.substring(0, 50);
 
     const filename = req.body.name + req.body.extension;
     const filepath = path.join(config.imagesPath, filename);
+
 
     // Abort if empty name
     if (req.body.name.trim().length == 0) {
@@ -185,6 +209,12 @@ router.delete('/:id', function(req, res, next) {
     if (image === null) {
         req.flash('error', "Couldn't delete image: the requested image couldn't be found.");
         return res.sendStatus(404);
+    }
+
+    // Only let the user who created it delete it
+    if (image.userID != req.user.id) {
+        req.flash('error', "You do not have permission to delete this image.");
+        return res.sendStatus(403);
     }
 
     try {

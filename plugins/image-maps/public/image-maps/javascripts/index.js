@@ -78,6 +78,10 @@ function sendRenameRequest() {
                     alert.textContent = "Either an image with the same name exists or you didn't provide a name. Please provide a new name.";
                     break;
 
+                case 403:
+                    alert.textContent = "You do not have permission to rename this image.";
+                    break;
+
                 case 404:
                     alert.textContent = "Server error: image not found.";
                     break;
@@ -119,6 +123,17 @@ window.onload = function() {
             event.stopPropagation();
             document.getElementById("rename-submit").click();
         }
+    });
+
+    // Load images asynchronously
+    Array.from(document.getElementsByClassName("uploaded-image")).forEach(img => {
+        img.src = img.getAttribute("data-url");
+    });
+
+    // Enable tooltips
+    let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
     });
 
     sessionStorage.clear();
