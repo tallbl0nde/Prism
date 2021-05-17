@@ -14,7 +14,7 @@ block pluginContent
 
             div.col-8
                 div(style="padding-top: 10vh")
-                form(action="/imagemaps/images" method="POST")
+                form(action="/imagemaps/images" method="POST" onsubmit="onFormSubmit()")
                     label(for="file").form-label Image
                     div.d-flex.justify-content-center#image-div
                         div.image-upload

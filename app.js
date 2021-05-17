@@ -236,6 +236,17 @@ app.use(function(req, res, next) {
     return next();
 });
 
+// Middleware to redirect to /login if not logged in
+app.use(function(req, res, next) {
+    // Redirect to login if not logged in
+    if (req.path !== '/login' && !req.isAuthenticated()) {
+        req.flash('error', "You need to be logged in to view this page.");
+        return res.redirect('/login');
+    }
+
+    next();
+});
+
 const indexRouter = require('./routes/index');
 app.use('/', indexRouter);
 

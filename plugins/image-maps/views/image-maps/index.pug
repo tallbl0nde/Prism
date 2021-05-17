@@ -24,14 +24,17 @@ block pluginContent
                 for image in images
                     div.col
                         div.card.w-75.h-100.mx-auto
-                            img(src=image.getPath).card-img-top
+                            img(src=image.thumbnailPath).card-img-top
                             div.card-body
                                 h6.card-title.m-0= image.name
                                 p.card-text.text-secondary= image.size
-                                div.d-flex#options
-                                    span.flex-grow-1
-                                    i.bi-pencil
-                                    i.bi-trash
+                                div.d-flex.justify-content-evenly#options
+                                    a(href=image.downloadPath)
+                                        i.bi-cloud-download
+                                    a(data-bs-toggle="modal" data-bs-target="#rename-modal" data-id=image.id data-name=image.name href="#" onclick="prepareRenameModal(this)")
+                                        i.bi-pencil
+                                    a(data-bs-toggle="modal" data-bs-target="#delete-modal" data-id=image.id data-name=image.name href="#" onclick="prepareDeleteModal(this)")
+                                        i.bi-trash
 
     nav.navbar.navbar-light.bg-light#bottom-navbar
         div.container-fluid.align-items-center
@@ -44,5 +47,43 @@ block pluginContent
                 div(style="margin-top: 0 !important").fw-light.m-1 0.05 / 1 GB (0.5%)
                 div(style="height: 0.6em").progress
                     div.progress-bar.w-50
+
+    div.modal.fade#rename-modal
+        div.modal-dialog
+            div.modal-content
+                div.modal-header
+                    h5.modal-title#rename-heading Rename
+                    button(data-bs-dismiss="modal" type="button").btn-close
+
+                div.modal-body
+                    div(style="display: none").alert.alert-danger#alert-div
+
+                    div
+                        label(for="name").form-label Name
+                        div.input-group
+                            input(type="text" name="name" oninput="updateName()" maxlength="50").form-control#rename-name
+                            span.input-group-text#rename-extension .ext
+                            input(type="hidden" name="extension")#rename-extension-data
+                            input(type="hidden" name="id")#rename-id
+                        div.form-text Only A-Z, a-z, 0-9, underscores and hyphens are allowed. Up to 50 characters are permitted.
+
+                div.modal-footer
+                    button(data-bs-dismiss="modal" type="button").btn.btn-secondary Cancel
+                    button(type="button" onclick="sendRenameRequest()").btn.btn-primary#rename-submit Rename
+
+    div.modal.fade#delete-modal
+        div.modal-dialog
+            div.modal-content
+                div.modal-header
+                    h5.modal-title#delete-heading Delete
+                    button(data-bs-dismiss="modal" type="button").btn-close
+
+                div.modal-body
+                    div.form-text Are you sure you wish to delete this image? This cannot be undone.
+                    input(type="hidden" name="id")#delete-id
+
+                div.modal-footer
+                    button(data-bs-dismiss="modal" type="button").btn.btn-secondary Cancel
+                    button(type="button" onclick="sendDeleteRequest()").btn.btn-primary#delete-submit Delete
 
     script(src="/image-maps/javascripts/index.js")

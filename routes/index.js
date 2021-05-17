@@ -6,15 +6,7 @@ var RememberMeToken = require('../models/remembermetoken');
 
 // GET /
 // Renders the dashboard view.
-// Redirects to /login if not logged in.
 router.get('/', function(req, res, next) {
-    // Redirect to login if not logged in
-    // TODO: Move outside router
-    if (!req.isAuthenticated()) {
-        req.flash('error', "You need to be logged in to view this page.");
-        return res.redirect('/login');
-    }
-
     res.render('dashboard');
 });
 

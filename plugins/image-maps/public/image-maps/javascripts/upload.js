@@ -1,3 +1,8 @@
+// Disables the submit button
+function onFormSubmit() {
+    document.getElementById("upload-button").setAttribute("disabled", "");
+}
+
 // Updates the passed dimension box
 function updateDimension(elm) {
     // Limit value
@@ -37,10 +42,10 @@ function updateImage(event) {
                 if (w > elmW.max || h > elmH.max) {
                     if (w > h) {
                         w = 1280;
-                        h *= (w/tmp.width);
+                        h = Math.ceil(h * w/tmp.width);
                     } else {
-                        w *= (h/tmp.height);
                         h = 1280;
+                        w = Math.ceil(w * h/tmp.height);
                     }
                 }
 

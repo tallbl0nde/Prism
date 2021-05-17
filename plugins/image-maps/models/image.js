@@ -1,6 +1,7 @@
 const config = require('../config/config');
 const database = require('../database')
 const fs = require('fs');
+const path = require('path');
 
 // Object used to interface with image records in the database.
 // Any changes are not saved without explicitly calling save().
@@ -138,54 +139,62 @@ class Image {
         // Wrap all operations in transaction, causing database
         // to revert on FS error
         database.doInTransaction(function() {
-            // Delete file first
-            fs.unlinkSync(path.join(config.imagesPath, this._fileName));
-
             database.query(`DELETE FROM Images WHERE id = $id;`, {
                                 id: this._id
                             });
-        });
+
+            let filepath = path.join(config.imagesPath, this._fileName);
+            if (fs.existsSync(filepath)) {
+                fs.unlinkSync(filepath);
+            }
+        }.bind(this));
     }
 
     // Saves in-memory changes to the database and filesystem.
     // Throws an error should one occur.
     save() {
-        let image = this;
         // Wrap all operations in transaction, causing database
         // to revert on FS error
         database.doInTransaction(function() {
             // Insert if not in database
-            if (image._inDB == false) {
+            if (this._inDB == false) {
                 database.query(`INSERT INTO Images (
                                 file_name, upload_date, size, user_id
                                 ) VALUES (
                                 $fileName, $uploadDate, $size, $userID
                                 );`, {
-                                    fileName: image._fileName,
-                                    uploadDate: image._uploadDate,
-                                    size: image._size,
-                                    userID: image._userID
+                                    fileName: this._fileName,
+                                    uploadDate: this._uploadDate,
+                                    size: this._size,
+                                    userID: this._userID
                                 });
 
             // Update entry otherwise
             } else {
                 // Rename file first
-                if (image._filename != image._newFileName) {
-                    fs.renameSync(path.join(config.imagesPath, image._fileName), path.join(config.imagesPath, image._newFileName));
+                if (this._fileName != this._newFileName) {
+                    fs.renameSync(path.join(config.imagesPath, this._fileName), path.join(config.imagesPath, this._newFileName), err => {
+                        throw new Error("Couldn't rename image: " + err.message);
+                    });
                 }
 
-                database.query(`UPDATE Images SET
-                                file_name = $fileName, upload_date = $uploadDate,
-                                size = $size, user_id = $userID
-                                WHERE id = $id;`, {
-                                    fileName: image._fileName,
-                                    uploadDate: image._uploadDate,
-                                    size: image._size,
-                                    userID: image._userID,
-                                    id: image._id
-                                });
+                try {
+                    database.query(`UPDATE Images SET
+                                    file_name = $fileName, upload_date = $uploadDate,
+                                    size = $size, user_id = $userID
+                                    WHERE id = $id;`, {
+                                        fileName: this._newFileName,
+                                        uploadDate: this._uploadDate,
+                                        size: this._size,
+                                        userID: this._userID,
+                                        id: this._id
+                                    });
+                } catch (err) {
+                    fs.renameSync(path.join(config.imagesPath, this._newFileName), path.join(config.imagesPath, this._fileName));
+                    throw new Error(err.message);
+                }
             }
-        });
+        }.bind(this));
     }
 }
 

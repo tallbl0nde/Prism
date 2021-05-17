@@ -14,8 +14,10 @@ router.get('/', function(req, res, next) {
 
     res.locals.images = images.map(image => {
         return {
+            id: image.id,
             name: image.fileName,
-            getPath: `/imagemaps/images/${image.id}/thumbnail`,
+            downloadPath: `/imagemaps/images/${image.id}/download`,
+            thumbnailPath: `/imagemaps/images/${image.id}/thumbnail`,
             path: path.join(config.imagesPath, image.fileName),
             size: image.size
         }
