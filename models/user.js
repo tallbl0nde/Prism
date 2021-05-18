@@ -149,6 +149,18 @@ class User {
     // Database interactions
     // --------------------------------------------------
 
+    // Returns all users in the database.
+    static findAll() {
+        let records = database.queryAll(`SELECT id, username, password_salt, password_hash, created_timestamp, failed_logins, is_admin, image_path FROM Users;`)
+        if (records === undefined) {
+            return null;
+        }
+
+        return records.map(record => {
+            return User.createFromRecord(record);
+        });
+    }
+
     // Finds a User for the given id.
     // Returns null if one couldn't be found.
     static findByID(id) {

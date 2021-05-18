@@ -4,6 +4,7 @@ var path = require('path');
 var router = express.Router();
 
 var Image = require('../models/image');
+var User = require('../../../models/user');
 
 // Helper to format bytes to a string
 // Won't work for >= 1024TB
@@ -88,6 +89,38 @@ router.get('/', function(req, res, next) {
     });
 
     res.render('image-maps/index');
+});
+
+// GET /all
+// Renders the main view, containing a list of images
+// uploaded by everyone
+router.get('/all', function(req, res, next) {
+    // Get all users from database
+    let users = User.findAll();
+
+    // Create images from database
+    res.locals.images = Image.findAll().map(image => {
+        let d = new Date(image.uploadDate * 1000);
+
+        return {
+            id: image.id,
+            name: image.fileName,
+            downloadPath: `/imagemaps/images/${image.id}/download`,
+            thumbnailPath: `/imagemaps/images/${image.id}/thumbnail`,
+            path: path.join(config.imagesPath, image.fileName),
+            size: formatBytes(image.size),
+            uploadDate: `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear().toString().padStart(2, "0").substr(-2)} ${d.getHours()}:${d.getMinutes().toString().padStart(2, "0")}`,
+            owner: users.find(user => user.id == image.userID).username,
+            isOwner: (req.user.id == image.userID)
+        };
+    });
+
+    // Sort alphabetically
+    res.locals.images.sort((first, second) => {
+        return first.name.toLowerCase().localeCompare(second.name.toLowerCase());
+    });
+
+    res.render('image-maps/index_all');
 });
 
 // GET /upload

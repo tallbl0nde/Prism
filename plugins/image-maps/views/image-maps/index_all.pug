@@ -6,7 +6,7 @@ block pluginStylesheets
 block pluginContent
     nav.navbar.navbar-light.bg-light#top-navbar
         div.container-fluid.align-items-center
-            span.navbar-brand.h1.m-0 Your Uploaded Images
+            span.navbar-brand.h1.m-0 All Uploaded Images
             div.ms-auto
                 ul.navbar-nav.list-group-horizontal
                     li.nav-item
@@ -16,7 +16,7 @@ block pluginContent
 
     if images.length == 0
         div(style="padding-top: 40vh").text-center
-            p.text-secondary No images found. Upload some! :)
+            p.text-secondary No images found. :(
     else
         div.container#image-container
             div.row.buffer-row
@@ -36,16 +36,23 @@ block pluginContent
                                             i.bi-hdd.pe-2.text-secondary
                                             span.card-text.text-secondary= image.size
                                         div
+                                            i.bi-person.pe-2.text-secondary
+                                            span.card-text.text-secondary= image.owner
+                                        div
                                             i.bi-clock.pe-2.text-secondary
                                             span.card-text.text-secondary= image.uploadDate
 
                                         div.d-flex.justify-content-evenly.options
                                             a(href=image.downloadPath)
                                                 i(data-bs-toggle="tooltip" data-bs-placement="bottom" title="Download").bi-cloud-download
-                                            a(data-bs-toggle="modal" data-bs-target="#rename-modal" data-id=image.id data-name=image.name href="#" onclick="prepareRenameModal(this)")
-                                                i(data-bs-toggle="tooltip" data-bs-placement="bottom" title="Rename").bi-pencil
-                                            a(data-bs-toggle="modal" data-bs-target="#delete-modal" data-id=image.id data-name=image.name href="#" onclick="prepareDeleteModal(this)")
-                                                i(data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete").bi-trash
+                                            if image.isOwner === true
+                                                a(data-bs-toggle="modal" data-bs-target="#rename-modal" data-id=image.id data-name=image.name href="#" onclick="prepareRenameModal(this)")
+                                                    i(data-bs-toggle="tooltip" data-bs-placement="bottom" title="Rename").bi-pencil
+                                                a(data-bs-toggle="modal" data-bs-target="#delete-modal" data-id=image.id data-name=image.name href="#" onclick="prepareDeleteModal(this)")
+                                                    i(data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete").bi-trash
+                                            else
+                                                i(disabled).bi-pencil
+                                                i(disabled).bi-trash
             div.row.buffer-row
             div.row.buffer-row
             div.row.buffer-row

@@ -38,7 +38,7 @@ function sendDeleteRequest() {
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (xhttp.readyState == XMLHttpRequest.DONE) {
-            window.location.href = "/imagemaps";
+            location.reload();
         }
     }
 
@@ -71,7 +71,7 @@ function sendRenameRequest() {
 
             switch (xhttp.status) {
                 case 200:
-                    window.location.href = "/imagemaps";
+                    location.reload();
                     break;
 
                 case 400:

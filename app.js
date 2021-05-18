@@ -117,6 +117,9 @@ try {
     process.exit(1);
 }
 
+// let user = User.createNew("BluOxygen", "BlueBreath#21", true, "public/images/users/default.png");
+// user.save();
+
 // --------------------------------------------------
 // Initialize passport for authentication
 // --------------------------------------------------

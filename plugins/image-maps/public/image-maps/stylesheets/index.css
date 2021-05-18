@@ -66,12 +66,16 @@
     margin-top: 0.6em;
 }
 
+.options i[disabled] {
+    color: rgb(235, 235, 235);
+}
+
 .options i {
     color: silver;
     transition: all 200ms ease-out;
 }
 
-.options i:hover {
+.options i:not([disabled]):hover {
     color: grey;
 }
 
