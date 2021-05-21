@@ -1,0 +1,73 @@
+extends dashboard
+
+block pluginStylesheets
+    link(rel="stylesheet" href="/stylesheets/account.css")
+
+block pluginContent
+    nav.navbar.navbar-light.bg-light#top-navbar
+        div.container-fluid.align-items-center
+            span.navbar-brand.h1.m-0 Your Account
+
+    div.container
+        div.row
+            div.col-sm-1.col-md-3
+
+            div.col-sm-10.col-md-6
+                div.d-flex.justify-content-left.align-items-center#details-div
+                    div.image-upload
+                        label(for="file")
+                            img(src=user.image).rounded-circle#image
+                        input(type="file" name="file" onchange="sendImageRequest(this)" accept="image/jpeg,image/png").form-control#file
+                        input(type="hidden" name="data")#data
+
+                    span#details-info
+                        div.d-flex.justify-content-left
+                            h5= user.username
+                            a(data-bs-toggle="modal" data-bs-target="#rename-modal" href="#").options
+                                i(data-bs-toggle="tooltip" data-bs-placement="top" title="Edit").bi-pencil
+                        p.no-margin.text-secondary= joinDate
+
+                div.separator
+
+                div
+                    h6(style="padding-bottom: 1em") Change Password
+                    form(action="/account/password" method="POST" onsubmit="onFormSubmit()")
+                        div.row.d-flex
+                            div.col-sm-12.col-xl-4.p-sm-3
+                                label(for="old") Current Password
+                                div.input-group
+                                    input(type="password" name="old" required).form-control#password-old
+
+                            div.col-sm-12.col-xl-4.p-sm-3
+                                label(for="new") New Password
+                                div.input-group
+                                    input(type="password" name="new" minlength="8" required).form-control#password-new
+
+                            div.col-sm-12.col-xl-4.p-sm-3.d-flex.justify-content-center.align-self-end
+                                button(role='submit').btn.btn-primary#password-submit Change Password
+
+                div#password-div
+
+            div.col-sm-1.col-md-3
+
+    div.modal.fade#rename-modal
+        div.modal-dialog
+            div.modal-content
+                div.modal-header
+                    h5.modal-title Change Username
+                    button(data-bs-dismiss="modal" type="button").btn-close
+
+                div.modal-body
+                    div(style="display: none").alert.alert-danger#alert-div
+
+                    div
+                        label(for="name").form-label Username
+                        div.input-group
+                            input(type="text" name="name" value=user.username oninput="updateName()" maxlength="20").form-control#rename-name
+                        div.form-text Only A-Z, a-z, 0-9, underscores and hyphens are allowed. Up to 20 characters are permitted.
+
+                div.modal-footer
+                    button(data-bs-dismiss="modal" type="button").btn.btn-secondary Cancel
+                    button(type="button" onclick="sendRenameRequest()").btn.btn-primary#rename-submit Rename
+
+    script(src="/javascripts/account.js")

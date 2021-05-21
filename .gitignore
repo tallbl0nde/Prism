@@ -6,3 +6,6 @@ node_modules/
 
 # Don't upload databases either
 *.db
+
+# Ignore user files
+/public/images/users

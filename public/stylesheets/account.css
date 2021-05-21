@@ -1,0 +1,38 @@
+#button-wrapper {
+    position: relative;
+}
+
+#button-wrapper > button {
+    bottom: 0;
+}
+
+#details-div {
+    padding-top: 10vh;
+}
+
+#details-info {
+    padding-left: 2em;
+}
+
+#image {
+    cursor: pointer;
+    height: auto;
+    max-width: 6em;
+    transition: all 200ms ease-out;
+}
+
+#image:hover {
+    opacity: 50%;
+}
+
+.image-upload > input {
+    display: none;
+}
+
+.options {
+    padding-left: 1em;
+}
+
+#top-navbar {
+    border-bottom: lightgray 1px solid;
+}

@@ -250,7 +250,10 @@ app.use(function(req, res, next) {
     next();
 });
 
+const accountRouter = require('./routes/account');
 const indexRouter = require('./routes/index');
+
+app.use('/account', accountRouter);
 app.use('/', indexRouter);
 
 plugins.forEach(plugin => {
