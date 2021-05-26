@@ -21,6 +21,18 @@ block content
                             i(class=plugin.icon)
                             span= plugin.name
 
+        if user.isAdmin
+            hr
+            ul.nav.nav-pills.flex-column
+                li.nav-item
+                    if admin && admin.page === "users"
+                        a(href="/admin/users").nav-link.text-white.active
+                            i.bi-people
+                            span User Management
+                    else
+                        a(href="/admin/users").nav-link.text-white
+                            i.bi-people
+                            span User Management
 
         hr
 

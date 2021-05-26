@@ -1,0 +1,39 @@
+extends ../dashboard
+
+block pluginContent
+    div.container
+        div.row
+            div.col-1.col-lg-2
+
+            div.col-10.col-lg-8.mt-5
+                div.d-flex.justify-content-between.pb-3
+                    h5 User Management
+                    a(href="/admin/users/new").btn.btn-primary
+                        i.bi-plus-circle.pe-2
+                        span Add New User
+
+                div.table-responsive
+                    table.table.table-hover.table-striped
+                        thead
+                            tr
+                                th(scope="col") ID
+                                th(scope="col") Username
+                                th(scope="col") Creation Time
+                                th(scope="col") Failed Logins
+                                th(scope="col") Role
+                                th(scope="col") Actions
+                        tbody
+                            for u in users
+                                tr
+                                    th(scope="row")= u.id
+                                    td= u.username
+                                    td= u.creationTime
+                                    td= u.failedLogins
+                                    td= u.role
+                                    td
+                                        if u.id != user.id
+                                            button(data-username=u.username data-path=u.deletePath onclick="confirmDeleteUser(this)").btn.btn-danger.btn-sm Delete
+
+            div.col-1.col-lg-2
+
+    script(src="/javascripts/admin.js")

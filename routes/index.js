@@ -1,5 +1,4 @@
 var express = require('express');
-var path = require('path')
 var passport = require('passport');
 var router = express.Router();
 
@@ -8,7 +7,6 @@ var RememberMeToken = require('../models/remembermetoken');
 // GET /
 // Renders the dashboard view.
 router.get('/', function(req, res, next) {
-    res.locals.imageURL = path.join("/images/users/", req.user.id.toString());
     res.render('dashboard');
 });
 

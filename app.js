@@ -117,9 +117,6 @@ try {
     process.exit(1);
 }
 
-// let user = User.createNew("BluOxygen", "BlueBreath#21", true, "public/images/users/default.png");
-// user.save();
-
 // --------------------------------------------------
 // Initialize passport for authentication
 // --------------------------------------------------
@@ -232,6 +229,8 @@ app.use(function(req, res, next) {
         });
 
         res.locals.user = {
+            id: req.user.id,
+            isAdmin: req.user.isAdmin,
             image: req.user.imagePath.replace("public/", "/"),
             username: req.user.username
         }
@@ -251,9 +250,11 @@ app.use(function(req, res, next) {
 });
 
 const accountRouter = require('./routes/account');
+const adminRouter = require('./routes/admin');
 const indexRouter = require('./routes/index');
 
 app.use('/account', accountRouter);
+app.use('/admin', adminRouter);
 app.use('/', indexRouter);
 
 plugins.forEach(plugin => {

@@ -27,7 +27,7 @@ class User {
         user._passwordHash = data.password_hash;
         user._createdTimestamp = data.created_timestamp;
         user._failedLogins = data.failed_logins;
-        user._isAdmin = data.is_admin;
+        user._isAdmin = (data.is_admin === 1 ? true : false);
         user._imagePath = data.image_path;
 
         return user;
