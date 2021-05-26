@@ -191,6 +191,16 @@ class User {
         return User.createFromRecord(record);
     }
 
+    // Deletes the user from the database.
+    // Throws an error should one occur.
+    remove() {
+        database.doInTransaction(function() {
+            database.query(`DELETE FROM Users WHERE id = $id;`, {
+                                id: this._id
+                            });
+        }.bind(this));
+    }
+
     // Saves in-memory changes to the user object in the database
     save() {
         database.doInTransaction(function() {

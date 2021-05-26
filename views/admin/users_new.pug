@@ -1,0 +1,37 @@
+extends ../dashboard
+
+block pluginContent
+    div.container
+        div.row
+            div.col-1.col-lg-2
+
+            div.col-10.col-lg-8.mt-5
+                h5 Add New User
+
+                div.mt-4
+                form(action="/admin/users/new" method="POST")
+                    label(for="username").form-label Username
+                    input(type="text" name="username" oninput="updateName()" maxlength="20" required).form-control#name
+                    div.form-text The username used to login to the account. Only A-Z, a-z, 0-9, underscores and hyphens are allowed. Up to 20 characters are permitted.
+
+                    div.separator
+
+                    label(for="password").form-label Password
+                    input(type="password" name="password" oninput="updatePassword()" maxlength="50" required).form-control#password
+                    div.form-text The user's password. Up to 50 characters are permitted.
+
+                    div.separator
+
+                    div.form-check
+                        label(for="isAdmin").form-check-label Set as Admin
+                        input(type="checkbox" name="isAdmin" value="").form-check-input#isAdmin
+
+                    div.separator
+
+                    button(type="submit").btn.btn-primary#create-button
+                        i(style="margin-right: 0.5em").bi-plus-circle
+                        span Create User
+
+            div.col-1.col-lg-2
+
+    script(src="/javascripts/admin_new.js")
