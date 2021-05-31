@@ -1,0 +1,6 @@
+const config = {
+    // URL dynmap is accessible from
+    url: ""
+};
+
+module.exports = config;

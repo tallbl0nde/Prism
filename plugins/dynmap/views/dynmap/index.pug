@@ -1,0 +1,8 @@
+extends ../../../../views/dashboard
+
+block pluginStylesheets
+    link(rel='stylesheet' src='/dynmap/stylesheets/index.css')
+
+block pluginContent
+    iframe(src=path).w-100.vh-100
+        p An error occurred loading the dynmap iframe.

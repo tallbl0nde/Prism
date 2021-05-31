@@ -61,8 +61,8 @@ app.set('view engine', 'pug');
 app.set('views', views);
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: false, limit: "10mb" }));
+app.use(express.json({ limit: '5mb' }));
+app.use(bodyParser.urlencoded({ extended: false, limit: '5mb', parameterLimit: 5000 }));
 app.use(cookieParser());
 app.use(session({
     resave: false,
@@ -88,7 +88,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Use the public folders within each plugin
 plugins.forEach(plugin => {
-    app.use(express.static(plugin.static));
+    if (plugin.static != null) {
+        app.use(express.static(plugin.static));
+    }
 });
 
 // --------------------------------------------------
