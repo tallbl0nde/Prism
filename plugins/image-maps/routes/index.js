@@ -25,6 +25,7 @@ router.get('/', function(req, res, next) {
         return {
             id: image.id,
             name: image.fileName,
+            command: `/imagemap place ${image.fileName}`,
             downloadPath: `/imagemaps/images/${image.id}/download`,
             thumbnailPath: `/imagemaps/images/${image.id}/thumbnail`,
             path: path.join(config.imagesPath, image.fileName),
@@ -55,6 +56,7 @@ router.get('/all', function(req, res, next) {
         return {
             id: image.id,
             name: image.fileName,
+            command: `/imagemap place ${image.fileName}`,
             downloadPath: `/imagemaps/images/${image.id}/download`,
             thumbnailPath: `/imagemaps/images/${image.id}/thumbnail`,
             path: path.join(config.imagesPath, image.fileName),

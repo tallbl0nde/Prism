@@ -43,6 +43,8 @@ block pluginContent
                                             span.card-text.text-secondary= image.uploadDate
 
                                         div.d-flex.justify-content-evenly.options
+                                            a(href="#" onclick="copyToClipboard('" + image.command + "')")
+                                                i(data-bs-toggle="tooltip" data-bs-placement="bottom" title="Copy Command").bi-terminal
                                             a(href=image.downloadPath)
                                                 i(data-bs-toggle="tooltip" data-bs-placement="bottom" title="Download").bi-cloud-download
                                             if image.isOwner === true || user.isAdmin === true

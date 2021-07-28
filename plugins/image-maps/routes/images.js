@@ -12,14 +12,9 @@ var Image = require('../models/image');
 // [C]reate
 // Creates a file for the uploaded image and adds an entry to the database.
 router.post('/', function(req, res, next) {
-    // Get list of the user's images and refuse upload if over limit
-    req.userImages = Image.findByUserID(req.user.id);
-    let bytes = req.userImages.map(image => {
-        return image.size;
-    }).reduce((a, b) => a + b, 0);
-
-    if (bytes >= req.globalConfig.storageLimit) {
-        req.flash('error', "Your storage quota is full. Please delete some images and then try again.");
+    // Refuse upload if over limit
+    if (res.locals.user.usage.bytes >= req.globalConfig.storageLimit) {
+        req.flash('error', "Your storage quota is full. Please free some space and try again.");
         return res.redirect('/imagemaps/upload');
     }
 
