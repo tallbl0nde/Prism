@@ -46,5 +46,14 @@ block content
                     a(href="/logout").account-button
                         i.bi-box-arrow-left
 
+        div(style="height: 0.7em")
+
+        div#storage.d-flex.align-items-center
+            span
+                i.bi-hdd
+            div.progress.w-100
+                div(style="width: " + user.usage.percentage + "%;").progress-bar
+                    span(data-bs-toggle="tooltip" data-bs-placement="top" title=user.usage.string style="font-size: 90%").progress-label= `${user.usage.percentage}%`
+
     div#pluginContent
         block pluginContent

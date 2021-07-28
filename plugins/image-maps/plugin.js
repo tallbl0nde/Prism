@@ -2,6 +2,8 @@ const database = require('./database');
 const fs = require('fs');
 const path = require('path');
 
+var Image = require('./models/image');
+
 const plugin = {
     // Metadata
     icon: "bi-images",
@@ -24,6 +26,16 @@ const plugin = {
     static: path.join(__dirname, 'public'),
 
     // Methods to run on events
+    onGetUsage: function(user) {
+        let userImages = Image.findByUserID(user.id);
+
+        // Calculate usage
+        let bytes = userImages.map(image => {
+            return image.size;
+        }).reduce((a, b) => a + b, 0);
+        return bytes;
+    },
+
     onInitialize: function() {
         let db = path.join(__dirname, "data", "database.db");
 

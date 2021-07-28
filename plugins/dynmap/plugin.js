@@ -19,6 +19,7 @@ const plugin = {
     static: path.join(__dirname, 'public'),
 
     // Methods to run on events
+    onGetUsage: null,
     onInitialize: null,
     onUserCreate: null,
     onUserDelete: null

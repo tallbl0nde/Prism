@@ -88,7 +88,7 @@ window.onbeforeunload = function() {
 }
 
 // Restore form data on load
-window.onload = function() {
+window.addEventListener('load', function() {
     let tmp = null;
 
     tmp = sessionStorage.getItem("image");
@@ -114,4 +114,4 @@ window.onload = function() {
     if (document.getElementById("width").value) {
         updateDimensions();
     }
-}
+});

@@ -8,6 +8,7 @@ var bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
+var utils = require('./utils');
 
 var RememberMeToken = require('./models/remembermetoken');
 var User = require('./models/user');
@@ -18,9 +19,8 @@ var app = express();
 // Read config values
 // --------------------------------------------------
 
-const config = {
-    secrets: require('./config/secrets')
-}
+var config = require('./config/config');
+config.secrets = require('./config/secrets');
 
 // --------------------------------------------------
 // Find plugins
@@ -213,6 +213,15 @@ app.use(passport.session());
 app.use(passport.authenticate("remember-me"));
 
 // --------------------------------------------------
+// Pass 'global' config
+// --------------------------------------------------
+
+app.use(function(req, res, next) {
+    req.globalConfig = config;
+    return next();
+});
+
+// --------------------------------------------------
 // Load routers
 // --------------------------------------------------
 
@@ -230,11 +239,27 @@ app.use(function(req, res, next) {
             };
         });
 
+        // Calculate user's total storage usage
+        let bytes = 0;
+        plugins.forEach(plugin => {
+            if (plugin.onGetUsage != null) {
+                bytes += plugin.onGetUsage(req.user);
+            }
+        });
+
+        let percentage = Math.round(((bytes/req.globalConfig.storageLimit) + Number.EPSILON) * 10000) / 100;
+        percentage = (percentage > 100 ? 100 : percentage);
+
+        // Create and pass user metadata object
         res.locals.user = {
             id: req.user.id,
             isAdmin: req.user.isAdmin,
             image: req.user.imagePath.replace("public/", "/"),
-            username: req.user.username
+            username: req.user.username,
+            usage: {
+                percentage: percentage,
+                string: `${utils.formatBytes(bytes)} / ${utils.formatBytes(req.globalConfig.storageLimit)}`
+            }
         }
     }
     return next();

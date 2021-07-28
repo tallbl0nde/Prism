@@ -115,7 +115,7 @@ function updateName() {
 }
 
 // Delete stored image data on load
-window.onload = function() {
+window.addEventListener('load', function() {
     // Submit rename form on enter
     let elm = document.getElementById("rename-name");
     elm.addEventListener("keyup", event => {
@@ -130,11 +130,5 @@ window.onload = function() {
         img.src = img.getAttribute("data-url");
     });
 
-    // Enable tooltips
-    let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-
     sessionStorage.clear();
-}
+});

@@ -28,12 +28,6 @@
     padding-left: 1.5em
 }
 
-#storage {
-    margin-right: 1em;
-    position: fixed;
-    right: 0;
-}
-
 #top-navbar {
     border-bottom: lightgray 1px solid;
 }

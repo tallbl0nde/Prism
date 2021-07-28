@@ -18,7 +18,7 @@ router.post('/', function(req, res, next) {
         return image.size;
     }).reduce((a, b) => a + b, 0);
 
-    if (bytes >= config.storageLimit) {
+    if (bytes >= req.globalConfig.storageLimit) {
         req.flash('error', "Your storage quota is full. Please delete some images and then try again.");
         return res.redirect('/imagemaps/upload');
     }

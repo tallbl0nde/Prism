@@ -1,0 +1,6 @@
+const config = {
+    // Amount of storage allocated to each user, in bytes (defaults to 10MB)
+    storageLimit: 10485760
+};
+
+module.exports = config;
