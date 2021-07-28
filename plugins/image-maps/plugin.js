@@ -7,12 +7,12 @@ var Image = require('./models/image');
 const plugin = {
     // Metadata
     icon: "bi-images",
-    name: "ImageMaps",
+    name: "Custom Images",
     author: "tallbl0nde",
     version: "1.0.0",
 
     // Routing
-    path: "/imagemaps",
+    path: "/image-maps",
     routers: [
         {
             prefix: '/images',

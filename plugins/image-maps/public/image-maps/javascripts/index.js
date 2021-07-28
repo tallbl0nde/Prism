@@ -97,7 +97,7 @@ function sendDeleteRequest() {
     }
 
     // Send request
-    xhttp.open("DELETE", `/imagemaps/images/${id}`, true);
+    xhttp.open("DELETE", `/image-smaps/images/${id}`, true);
     xhttp.send();
 }
 
@@ -152,7 +152,7 @@ function sendRenameRequest() {
     };
 
     // Send request
-    xhttp.open("POST", `/imagemaps/images/${id}`, true);
+    xhttp.open("POST", `/image-maps/images/${id}`, true);
     xhttp.setRequestHeader("Content-Type", "application/json");
     xhttp.send(JSON.stringify({
         "name": document.getElementById("rename-name").value,

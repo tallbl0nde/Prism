@@ -14,7 +14,7 @@ block pluginContent
 
             div.col-8
                 div(style="padding-top: 10vh")
-                form(action="/imagemaps/images" method="POST" onsubmit="onFormSubmit()")
+                form(action="/image-maps/images" method="POST" onsubmit="onFormSubmit()")
                     label(for="file").form-label Image
                     div.d-flex.justify-content-center#image-div
                         div.image-upload
@@ -65,7 +65,7 @@ block pluginContent
     nav.navbar.navbar-light.bg-light#bottom-navbar
         div.container-fluid.align-items-center
             span.navbar-brand.h1.m-0
-                a(href="/imagemaps/").btn.btn-primary
+                a(href="/image-maps/").btn.btn-primary
                     i(style="margin-right: 0.5em").bi-arrow-left
                     span Back
 

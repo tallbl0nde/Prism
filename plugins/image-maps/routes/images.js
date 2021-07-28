@@ -15,7 +15,7 @@ router.post('/', function(req, res, next) {
     // Refuse upload if over limit
     if (res.locals.user.usage.bytes >= req.globalConfig.storageLimit) {
         req.flash('error', "Your storage quota is full. Please free some space and try again.");
-        return res.redirect('/imagemaps/upload');
+        return res.redirect('/image-maps/upload');
     }
 
     // Strip invalid characters from name, limit to 50 chars
@@ -25,7 +25,7 @@ router.post('/', function(req, res, next) {
     // Abort if empty name
     if (req.body.name.trim().length == 0) {
         req.flash('error', "The name field was left blank, please provide a name for the image.");
-        return res.redirect('/imagemaps/upload');
+        return res.redirect('/image-maps/upload');
     }
 
     // Abort if invalid dimensions
@@ -33,7 +33,7 @@ router.post('/', function(req, res, next) {
     req.body.height = Number(req.body.height);
     if (req.body.width === 0 || req.body.height === 0) {
         req.flash('error', "No dimensions were provided. Please provide the size to scale the image to.");
-        return res.redirect('/imagemaps/upload');
+        return res.redirect('/image-maps/upload');
     }
 
     // Limit dimensions to 1280 x 1280
@@ -52,7 +52,7 @@ router.post('/', function(req, res, next) {
     // Abort if file exists
     if (fs.existsSync(filepath)) {
         req.flash('error', "An image with that name exists, please try a different name.");
-        return res.redirect('/imagemaps/upload');
+        return res.redirect('/image-maps/upload');
     }
 
     // Resize image to requested size and write to filesystem
@@ -71,17 +71,17 @@ router.post('/', function(req, res, next) {
                 // Delete if we couldn't insert
                 fs.unlinkSync(path);
                 req.flash('error', "An entry for the image couldn't be added to the database. Please try again later.");
-                return res.redirect('/imagemaps/upload');
+                return res.redirect('/image-maps/upload');
             }
 
             // Redirect back to root
             req.flash('info', "Image uploaded successfully!");
-            return res.redirect('/imagemaps');
+            return res.redirect('/image-maps');
         })
         .catch(err => {
             console.log(err.message);
             req.flash('error', "An internal server error occurred. Please try again later.");
-            return res.redirect('/imagemaps/upload');
+            return res.redirect('/image-maps/upload');
         });
 });
 

@@ -10,9 +10,9 @@ block pluginContent
             div.ms-auto
                 ul.navbar-nav.list-group-horizontal
                     li.nav-item
-                        a(href="/imagemaps").nav-link.nav-option Your Images
+                        a(href="/image-maps").nav-link.nav-option Your Images
                     li.nav-item
-                        a(href="/imagemaps/all").nav-link.nav-option All Images
+                        a(href="/image-maps/all").nav-link.nav-option All Images
 
     if images.length == 0
         div(style="padding-top: 40vh").text-center
@@ -62,7 +62,7 @@ block pluginContent
     nav.navbar.navbar-light.bg-light#bottom-navbar
         div.container-fluid.align-items-center
             span.navbar-brand.h1.m-0
-                a(href="/imagemaps/upload").btn.btn-primary
+                a(href="/image-maps/upload").btn.btn-primary
                     i(style="margin-right: 0.5em").bi-cloud-arrow-up
                     span Upload Image
 

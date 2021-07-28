@@ -26,9 +26,8 @@ router.get('/', function(req, res, next) {
             id: image.id,
             name: image.fileName,
             command: `/imagemap place ${image.fileName}`,
-            downloadPath: `/imagemaps/images/${image.id}/download`,
-            thumbnailPath: `/imagemaps/images/${image.id}/thumbnail`,
-            path: path.join(config.imagesPath, image.fileName),
+            downloadPath: `/image-maps/images/${image.id}/download`,
+            thumbnailPath: `/image-maps/images/${image.id}/thumbnail`,
             size: utils.formatBytes(image.size),
             uploadDate: `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear().toString().padStart(2, "0").substr(-2)} ${d.getHours()}:${d.getMinutes().toString().padStart(2, "0")}`
         };
@@ -57,8 +56,8 @@ router.get('/all', function(req, res, next) {
             id: image.id,
             name: image.fileName,
             command: `/imagemap place ${image.fileName}`,
-            downloadPath: `/imagemaps/images/${image.id}/download`,
-            thumbnailPath: `/imagemaps/images/${image.id}/thumbnail`,
+            downloadPath: `/image-maps/images/${image.id}/download`,
+            thumbnailPath: `/image-maps/images/${image.id}/thumbnail`,
             path: path.join(config.imagesPath, image.fileName),
             size: utils.formatBytes(image.size),
             uploadDate: `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear().toString().padStart(2, "0").substr(-2)} ${d.getHours()}:${d.getMinutes().toString().padStart(2, "0")}`,
