@@ -21,13 +21,13 @@ html
 
     body
         //- Show flash messages at bottom
-        if flash && flash.length > 0
-            div.position-relative#flash-div
-                div.toast-container.position-absolute.p-3.top-0.start-50.translate-middle-x
+        div.position-relative#flash-div
+            div.toast-container.position-absolute.p-3.top-0.start-50.translate-middle-x
+                if flash && flash.length > 0
                     each message in flash
                         div(role="alert").toast.align-items-center
                             div.d-flex
-                                d.toast-body
+                                div.toast-body
                                     if message.type === "error"
                                         i.bi-exclamation-diamond#flash-icon
                                     else if message.type === "info"

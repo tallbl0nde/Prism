@@ -1,0 +1,18 @@
+#bottom-navbar {
+    border-top: lightgray 1px solid;
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+}
+
+#main-container {
+    padding-bottom: 7em;
+}
+
+#top-navbar {
+    border-bottom: lightgray 1px solid;
+}
+
+#upload-spinner {
+    display: none;
+}

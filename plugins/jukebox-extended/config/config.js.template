@@ -1,0 +1,12 @@
+const config = {
+    // Path to plugin config file
+    configFile: "",
+
+    // Path to extracted resource pack
+    resourcePackPath: "",
+
+    // Path to resource pack (.zip file)
+    zipFile: ""
+};
+
+module.exports = config;

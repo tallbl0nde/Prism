@@ -1,0 +1,58 @@
+extends ../../../../views/dashboard
+
+block pluginStylesheets
+    link(rel="stylesheet" href="/jukebox-extended/stylesheets/upload.css")
+
+block pluginContent
+    nav.navbar.navbar-light.bg-light#top-navbar
+        div.container-fluid.align-items-center
+            span.navbar-brand.h1.m-0 Upload Audio File
+
+    div.container#main-container
+        div.row
+            div.col-2
+
+            div.col-8
+                div(style="padding-top: 10vh")
+                form(action="/jukebox-extended/audios" method="POST" onsubmit="onFormSubmit()")
+                    label(for="file").form-label Audio File
+                    input(name="file" type="file" accept="audio/ogg" required).form-control#file
+                    div.form-text.pt-2 Only .ogg files are supported by Minecraft. In order for the audio to sound like it is coming from the block, ensure a mono file is used.
+
+                    div.separator
+
+                    div.row
+                        div.col-5
+                            label(for="namespace").form-label Namespace
+                            input(type="text" minlength="5" maxlength="20" oninput="updateText(this)" name="namespace" required).form-control#namespace
+                            div.form-text.pt-2 The 'namespace' of a music disc is used to group multiple together. If you are unsure of what to enter, your username is a good idea. Lowercase characters, hyphens and underscores are permitted.
+
+                        div.col-7
+                            label(for="filename").form-label Audio Name
+                            input(type="text" minlength="1" maxlength="50" oninput="updateText(this)" name="filename" required).form-control#filename
+                            div.form-text.pt-2 The name of the music disc. Lowercase characters, hyphens and underscores are permitted.
+
+                    div.form-text.pt-2#fullname Choose the namespace and name for the audio to view the final ID for the music disc.
+
+                    div.separator
+
+                    div.d-flex.align-items-center
+                        div(style="margin-right: 1em")
+                            button(type="submit").btn.btn-primary#upload-button
+                                i(style="margin-right: 0.5em").bi-cloud-arrow-up
+                                span Upload!
+
+                        span#upload-spinner
+                            div(role="status").spinner-border.spinner-border-sm.text-primary
+                                span.sr-only
+
+            div.col-2
+
+    nav.navbar.navbar-light.bg-light#bottom-navbar
+        div.container-fluid.align-items-center
+            span.navbar-brand.h1.m-0
+                a(href="/jukebox-extended/").btn.btn-primary
+                    i(style="margin-right: 0.5em").bi-arrow-left
+                    span Back
+
+    script(src="/jukebox-extended/javascripts/upload.js")
