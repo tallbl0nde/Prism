@@ -41,6 +41,17 @@ pluginDirs.forEach(dir => {
     plugins.push(plugin);
 });
 
+// Sort plugins alphabetically
+plugins.sort(function(a, b) {
+    if (a.name < b.name) {
+        return -1;
+    } else if (a.name > b.name) {
+        return -1;
+    }
+
+    return 0;
+});
+
 // Initialize plugins
 plugins.forEach(plugin => {
     if (plugin.onInitialize != null) {
@@ -257,6 +268,7 @@ app.use(function(req, res, next) {
             image: req.user.imagePath.replace("public/", "/"),
             username: req.user.username,
             usage: {
+                bytes: bytes,
                 percentage: percentage,
                 string: `${utils.formatBytes(bytes)} / ${utils.formatBytes(req.globalConfig.storageLimit)}`
             }

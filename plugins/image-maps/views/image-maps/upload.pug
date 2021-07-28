@@ -38,13 +38,13 @@ block pluginContent
 
                     div.row
                         div.col-4
-                            label(for="width") Width
+                            label(for="width").form-label Width
                             div.input-group
                                 input(type="number" min="0" max="1280" oninput="updateDimension(this)" name="width" required).form-control#width
                                 span.input-group-text px
 
                         div.col-4
-                            label(for="height") Height
+                            label(for="height").form-label Height
                             div.input-group
                                 input(type="number" min="0" max="1280" oninput="updateDimension(this)" name="height" required).form-control#height
                                 span.input-group-text px
@@ -56,9 +56,15 @@ block pluginContent
 
                     div.separator
 
-                    button(type="submit").btn.btn-primary#upload-button
-                        i(style="margin-right: 0.5em").bi-cloud-arrow-up
-                        span Upload!
+                    div.d-flex.align-items-center
+                        div(style="margin-right: 1em")
+                            button(type="submit").btn.btn-primary#upload-button
+                                i(style="margin-right: 0.5em").bi-cloud-arrow-up
+                                span Upload!
+
+                        span#upload-spinner
+                            div(role="status").spinner-border.spinner-border-sm.text-primary
+                                span.sr-only
 
             div.col-2
 

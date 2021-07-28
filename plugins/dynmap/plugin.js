@@ -4,7 +4,7 @@ const path = require('path');
 const plugin = {
     // Metadata
     icon: "bi-geo-alt",
-    name: "Dynmap",
+    name: "Server Map",
     author: "tallbl0nde",
     version: "1.0.0",
 

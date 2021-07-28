@@ -1,6 +1,7 @@
 // Disables the submit button
 function onFormSubmit() {
     document.getElementById("upload-button").setAttribute("disabled", "");
+    document.getElementById("upload-spinner").style.display = "inline-block";
 }
 
 // Updates the passed dimension box
