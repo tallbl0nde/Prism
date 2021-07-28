@@ -45,7 +45,7 @@ block pluginContent
                                         div.d-flex.justify-content-evenly.options
                                             a(href=image.downloadPath)
                                                 i(data-bs-toggle="tooltip" data-bs-placement="bottom" title="Download").bi-cloud-download
-                                            if image.isOwner === true
+                                            if image.isOwner === true || user.isAdmin === true
                                                 a(data-bs-toggle="modal" data-bs-target="#rename-modal" data-id=image.id data-name=image.name href="#" onclick="prepareRenameModal(this)")
                                                     i(data-bs-toggle="tooltip" data-bs-placement="bottom" title="Rename").bi-pencil
                                                 a(data-bs-toggle="modal" data-bs-target="#delete-modal" data-id=image.id data-name=image.name href="#" onclick="prepareDeleteModal(this)")

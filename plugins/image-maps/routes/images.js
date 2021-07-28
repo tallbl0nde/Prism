@@ -211,8 +211,8 @@ router.delete('/:id', function(req, res, next) {
         return res.sendStatus(404);
     }
 
-    // Only let the user who created it delete it
-    if (image.userID != req.user.id) {
+    // Only let the user who created it or admin delete it
+    if (!(image.userID == req.user.id || req.user.isAdmin === true)) {
         req.flash('error', "You do not have permission to delete this image.");
         return res.sendStatus(403);
     }
