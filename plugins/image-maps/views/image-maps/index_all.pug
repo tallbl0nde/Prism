@@ -48,8 +48,6 @@ block pluginContent
                                             a(href=image.downloadPath)
                                                 i(data-bs-toggle="tooltip" data-bs-placement="bottom" title="Download").bi-cloud-download
                                             if image.isOwner === true || user.isAdmin === true
-                                                a(data-bs-toggle="modal" data-bs-target="#rename-modal" data-id=image.id data-name=image.name href="#" onclick="prepareRenameModal(this)")
-                                                    i(data-bs-toggle="tooltip" data-bs-placement="bottom" title="Rename").bi-pencil
                                                 a(data-bs-toggle="modal" data-bs-target="#delete-modal" data-id=image.id data-name=image.name href="#" onclick="prepareDeleteModal(this)")
                                                     i(data-bs-toggle="tooltip" data-bs-placement="bottom" title="Delete").bi-trash
                                             else
@@ -65,29 +63,6 @@ block pluginContent
                 a(href="/image-maps/upload").btn.btn-primary
                     i(style="margin-right: 0.5em").bi-cloud-arrow-up
                     span Upload Image
-
-    div.modal.fade#rename-modal
-        div.modal-dialog
-            div.modal-content
-                div.modal-header
-                    h5.modal-title#rename-heading Rename
-                    button(data-bs-dismiss="modal" type="button").btn-close
-
-                div.modal-body
-                    div(style="display: none").alert.alert-danger#alert-div
-
-                    div
-                        label(for="name").form-label Name
-                        div.input-group
-                            input(type="text" name="name" oninput="updateName()" maxlength="50").form-control#rename-name
-                            span.input-group-text#rename-extension .ext
-                            input(type="hidden" name="extension")#rename-extension-data
-                            input(type="hidden" name="id")#rename-id
-                        div.form-text Only A-Z, a-z, 0-9, underscores and hyphens are allowed. Up to 50 characters are permitted.
-
-                div.modal-footer
-                    button(data-bs-dismiss="modal" type="button").btn.btn-secondary Cancel
-                    button(type="button" onclick="sendRenameRequest()").btn.btn-primary#rename-submit Rename
 
     div.modal.fade#delete-modal
         div.modal-dialog
