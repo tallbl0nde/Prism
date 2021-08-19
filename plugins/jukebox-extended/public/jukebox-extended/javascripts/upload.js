@@ -18,7 +18,7 @@ function updateText(elm) {
 function updateText2(elm) {
     // Remove illegal characters
     let text = elm.value;
-    let fixed = text.replace(/[^A-Za-z0-9-_\(\)]/g, "");
+    let fixed = text.replace(/[^A-Za-z0-9-_\(\) ]/g, "");
     elm.value = fixed;
 }
 

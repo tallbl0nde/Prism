@@ -20,8 +20,8 @@ block pluginContent
                             tr
                                 th(scope="col") ID
                                 th(scope="col") Username
-                                th(scope="col") Creation Time
-                                th(scope="col") Failed Logins
+                                th(scope="col") Join Date
+                                th(scope="col") Disk Usage
                                 th(scope="col") Role
                                 th(scope="col") Actions
                         tbody
@@ -30,7 +30,7 @@ block pluginContent
                                     th(scope="row")= u.id
                                     td= u.username
                                     td= u.creationTime
-                                    td= u.failedLogins
+                                    td= u.usage
                                     td= u.role
                                     td
                                         if u.id != user.id

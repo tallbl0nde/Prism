@@ -26,7 +26,7 @@ router.post('/', upload.any(), function(req, res, next) {
     req.body.namespace = req.body.namespace.substring(0, 20);
     req.body.name = req.body.name.replace(/[^a-z0-9-_]/g, "");
     req.body.name = req.body.name.substring(0, 50);
-    req.body.title = req.body.title.replace(/[^A-Za-z0-9-_\(\)]/g, "");
+    req.body.title = req.body.title.replace(/[^A-Za-z0-9-_\(\) ]/g, "");
     req.body.title = req.body.title.substring(0, 70);
 
     // Abort if empty namespace

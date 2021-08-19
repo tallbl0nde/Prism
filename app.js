@@ -231,6 +231,24 @@ app.use(passport.authenticate("remember-me"));
 
 app.use(function(req, res, next) {
     req.globalConfig = config;
+
+    req.diskUsageForUser = function(user) {
+        let bytes = 0;
+        plugins.forEach(plugin => {
+            if (plugin.onGetUsage != null) {
+                bytes += plugin.onGetUsage(user);
+            }
+        });
+
+        let percentage = Math.round(((bytes/req.globalConfig.storageLimit) + Number.EPSILON) * 10000) / 100;
+        percentage = (percentage > 100 ? 100 : percentage);
+
+        return {
+            bytes: bytes,
+            percentage: percentage,
+            string: `${utils.formatBytes(bytes)} / ${utils.formatBytes(req.globalConfig.storageLimit)}`
+        };
+    };
     return next();
 });
 
@@ -252,28 +270,13 @@ app.use(function(req, res, next) {
             };
         });
 
-        // Calculate user's total storage usage
-        let bytes = 0;
-        plugins.forEach(plugin => {
-            if (plugin.onGetUsage != null) {
-                bytes += plugin.onGetUsage(req.user);
-            }
-        });
-
-        let percentage = Math.round(((bytes/req.globalConfig.storageLimit) + Number.EPSILON) * 10000) / 100;
-        percentage = (percentage > 100 ? 100 : percentage);
-
         // Create and pass user metadata object
         res.locals.user = {
             id: req.user.id,
             isAdmin: req.user.isAdmin,
             image: req.user.imagePath.replace("public/", "/"),
             username: req.user.username,
-            usage: {
-                bytes: bytes,
-                percentage: percentage,
-                string: `${utils.formatBytes(bytes)} / ${utils.formatBytes(req.globalConfig.storageLimit)}`
-            }
+            usage: req.diskUsageForUser(req.user)
         }
     }
     return next();

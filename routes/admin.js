@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var utils = require('../utils');
 
 var User = require('../models/user');
 
@@ -26,11 +27,12 @@ router.use(function(req, res, next) {
 router.get('/users', function(req, res, next) {
     // Get a list of all users
     res.locals.users = User.findAll().map(user => {
+        let usage = req.diskUsageForUser(user);
         return {
             id: user.id,
             username: user.username,
             creationTime: formatTimestamp(user.createdTimestamp * 1000),
-            failedLogins: user.failedLogins,
+            usage: `${utils.formatBytes(usage.bytes)} (${usage.percentage}%)`,
             role: (user.isAdmin === true ? "Admin" : "User"),
             deletePath: `/admin/users/${user.id}`
         };
