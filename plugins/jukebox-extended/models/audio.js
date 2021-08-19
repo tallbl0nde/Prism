@@ -22,9 +22,11 @@ class Audio {
 
         audio._inDB = true;
         audio._id = data.id;
+        audio._drop = data.drop == 1;
         audio._namespace = data.namespace;
-        audio._fileName = data.file_name;
-        audio._zipPath = data.zip_path;
+        audio._name = data.name;
+        audio._title = data.title;
+        audio._duration = data.duration;
         audio._uploadDate = data.upload_date;
         audio._size = data.size;
         audio._userID = data.user_id;
@@ -33,26 +35,36 @@ class Audio {
     }
 
     // Creates a new audio object with the passed values.
-    static createNew(namespace, fileName, zipPath, size, userID) {
+    static createNew(drop, namespace, name, title, duration, size, userID) {
         let audio = new Audio();
 
         audio._inDB = false;
         audio._id = null;
 
+        if (typeof(drop) != "boolean") {
+            throw new Error("Drop must be a boolean.");
+        }
+        audio._drop = drop;
+
         if (typeof(namespace) != "string") {
             throw new Error("Namespace must be a string.");
         }
-        audio._namespace = fileName;
+        audio._namespace = namespace;
 
-        if (typeof(fileName) != "string") {
+        if (typeof(name) != "string") {
             throw new Error("File name must be a string.");
         }
-        audio._fileName = fileName;
+        audio._name = name;
 
-        if (typeof(zipPath) != "string") {
-            throw new Error("Zip path must be a string.");
+        if (typeof(title) != "string") {
+            throw new Error("Title must be a string.");
         }
-        audio._fileName = zipPath;
+        audio._title  = title;
+
+        if (typeof(duration) != "number") {
+            throw new Error("Title must be a number.");
+        }
+        audio._duration = Math.round(duration);
 
         audio._uploadDate = Math.floor(new Date().getTime() / 1000);
 
@@ -78,25 +90,47 @@ class Audio {
         return this._id;
     }
 
+    // Gets whether the audio can be dropped by a creeper.
+    get drop() {
+        return this._drop;
+    }
+
     // Gets the audio's namespace.
     get namespace() {
         return this._namespace;
     }
 
     // Gets the audio's file name.
-    get fileName() {
-        return this._fileName;
+    get name() {
+        return this._name;
     }
 
-    // Gets the audio's zip path.
-    get zipPath() {
-        return this._zipPath;
+    // Gets the audio's title.
+    get title() {
+        return this._title;
     }
 
-    // Sets the audio's new file name.
+    // Gets the audio's duration in seconds.
+    get duration() {
+        return this._duration;
+    }
+
+    // Sets the audio's drop.
     // Changes aren't made until save() is called.
-    set fileName(fileName) {
-        this._newFileName = fileName;
+    set drop(drop) {
+        this._drop = drop;
+    }
+
+    // Sets the audio's new name.
+    // Changes aren't made until save() is called.
+    set name(name) {
+        this._newName = name;
+    }
+
+    // Sets the audio's new title.
+    // Changes aren't made until save() is called.
+    set title(title) {
+        this._title = title;
     }
 
     // Sets the audio's new namespace.
@@ -127,14 +161,14 @@ class Audio {
     // Finds all audios stored.
     // Returns an empty array if none are found.
     static findAll() {
-        return database.queryAll(`SELECT id, namespace, file_name, zip_path, upload_date, size, user_id FROM Audios`)
+        return database.queryAll(`SELECT id, [drop], namespace, name, title, duration, upload_date, size, user_id FROM Audios`)
                        .map(record => Audio.createFromRecord(record));
     }
 
     // Finds an audio with the ID.
     // Returns null if not found.
     static findByID(id) {
-        let record = database.queryOne(`SELECT id, namespace, file_name, zip_path, upload_date, size, user_id FROM Audios WHERE id = $id;`, {
+        let record = database.queryOne(`SELECT id, [drop], namespace, name, title, duration, upload_date, size, user_id FROM Audios WHERE id = $id;`, {
             id: id
         });
         if (record === undefined) {
@@ -147,7 +181,7 @@ class Audio {
     // Finds all audios which were created by the given user.
     // Returns an empty array if none are found.
     static findByUserID(userID) {
-        let records = database.queryAll(`SELECT id, namespace, file_name, zip_path, upload_date, size, user_id FROM Audios WHERE user_id = $userID;`, {
+        let records = database.queryAll(`SELECT id, [drop], namespace, name, title, duration, upload_date, size, user_id FROM Audios WHERE user_id = $userID;`, {
             userID: userID
         });
 
@@ -162,7 +196,7 @@ class Audio {
 
     // Deletes the audio from the database and file-system.
     // Throws an error should one occur.
-    remove() {
+    remove(resourcePack) {
         // Wrap all operations in transaction, causing database
         // to revert on FS error
         database.doInTransaction(function() {
@@ -170,58 +204,57 @@ class Audio {
                                 id: this._id
                             });
 
-            // TODO: Remove from resource pack
-            // let filepath = path.join(config.imagesPath, this._fileName);
-            // if (fs.existsSync(filepath)) {
-            //     fs.unlinkSync(filepath);
-            // }
+            resourcePack.removeSound(this._namespace, this._name, this._title);
+            resourcePack.save();
         }.bind(this));
     }
 
     // Saves in-memory changes to the database and filesystem.
     // Throws an error should one occur.
-    save() {
+    save(resourcePack, data) {
         // Wrap all operations in transaction, causing database
         // to revert on FS error
         database.doInTransaction(function() {
             // Insert if not in database
             if (this._inDB == false) {
                 database.query(`INSERT INTO Audios (
-                                namespace, file_name, zip_path, upload_date, size, user_id
+                                [drop], namespace, name, title, duration, upload_date, size, user_id
                                 ) VALUES (
-                                $namespace, $fileName, $zipPath, $uploadDate, $size, $userID
+                                $drop, $namespace, $name, $title, $duration, $uploadDate, $size, $userID
                                 );`, {
+                                    drop: this._drop ? 1 : 0,
                                     namespace: this._namespace,
-                                    fileName: this._fileName,
-                                    zipPath: this._zipPath,
+                                    name: this._name,
+                                    title: this._title,
+                                    duration: this._duration,
                                     uploadDate: this._uploadDate,
                                     size: this._size,
                                     userID: this._userID
                                 });
 
-                // TODO: Insert into resource pack
+                resourcePack.addSound(this._namespace, this._name, this._title, this._duration, this._namespace, this._drop, data);
+                resourcePack.save();
 
             // Update entry otherwise
             } else {
-                // TODO: Update resource pack
+                database.query(`UPDATE Audios SET
+                                [drop] = $drop, namespace = $namespace, name = $name, title = $title,
+                                duration = $duration, upload_date = $uploadDate, size = $size, user_id = $userID
+                                WHERE id = $id;`, {
+                                    drop: this._drop ? 1 : 0,
+                                    namespace: this._namespace,
+                                    name: this._newFileName,
+                                    title: this._title,
+                                    duration: this._duration,
+                                    uploadDate: this._uploadDate,
+                                    size: this._size,
+                                    userID: this._userID,
+                                    id: this._id
+                                });
 
-                try {
-                    database.query(`UPDATE Audios SET
-                                    namespace = $namespace, file_name = $fileName, zip_path = $zipPath,
-                                    upload_date = $uploadDate, size = $size, user_id = $userID
-                                    WHERE id = $id;`, {
-                                        namespace: this._namespace,
-                                        fileName: this._newFileName,
-                                        zipPath: this._zipPath,
-                                        uploadDate: this._uploadDate,
-                                        size: this._size,
-                                        userID: this._userID,
-                                        id: this._id
-                                    });
-                } catch (err) {
-                    // TODO: Undo update
-                    throw new Error(err.message);
-                }
+                resourcePack.removeSound(this._namespace, this._name, this._title, this._namespace, this._drop, data);
+                resourcePack.addSound(this._namespace, this._newFileName, this._title, this._duration, this._namespace, this._drop, data);
+                resourcePack.save();
             }
         }.bind(this));
     }

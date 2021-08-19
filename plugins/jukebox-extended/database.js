@@ -59,10 +59,12 @@ function initialize() {
     doInTransaction(function() {
         // Create Audios table
         query(`CREATE TABLE Audios (
+            "drop" BOOLEAN NOT NULL,
             "id" INTEGER NOT NULL UNIQUE,
             "namespace" TEXT NOT NULL,
-            "file_name" TEXT NOT NULL UNIQUE,
-            "zip_path" TEXT NOT NULL UNIQUE,
+            "name" TEXT NOT NULL UNIQUE,
+            "title" TEXT NOT NULL,
+            "duration" INTEGER NOT NULL,
             "upload_date" INTEGER NOT NULL,
             "size" INTEGER NOT NULL,
             "user_id" INTEGER NOT NULL,

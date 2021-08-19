@@ -1,4 +1,18 @@
 const config = {
+        resourcePack: {
+        // Path to resource pack .zip file. Will be created if it doesn't exist.
+        path: "",
+
+        // Description of the resource pack.
+        description: "",
+
+        // Version of the resource pack (see https://minecraft.fandom.com/wiki/Tutorials/Creating_a_resource_pack#Creating_a_.MCMETA_file -> pack_format)
+        version: 0
+    },
+
+    // Path to server.properties file, used for updating some variables.
+    serverPropertiesLocation: "",
+
     // Amount of storage allocated to each user, in bytes (defaults to 10MB)
     storageLimit: 10485760
 };

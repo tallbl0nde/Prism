@@ -15,11 +15,18 @@ function updateText(elm) {
     updateFullname();
 }
 
+function updateText2(elm) {
+    // Remove illegal characters
+    let text = elm.value;
+    let fixed = text.replace(/[^A-Za-z0-9-_\(\)]/g, "");
+    elm.value = fixed;
+}
+
 // Updates the "this will require" text
 function updateFullname() {
     let namespace = document.getElementById("namespace").value;
-    let name = document.getElementById("filename").value;
-    let elm = document.getElementById("fullname");
+    let name = document.getElementById("name").value;
+    let elm = document.getElementById("name");
 
     elm.textContent = (name === "" || namespace === "" ? "Choose the namespace and name for the audio to view the final ID for the music disc." : `A music disc will be created with the ID: '${namespace}.${name}'.`);
 }
@@ -27,7 +34,8 @@ function updateFullname() {
 // Store form data on unload
 window.onbeforeunload = function() {
     sessionStorage.setItem("namespace", document.getElementById("namespace").value);
-    sessionStorage.setItem("filename", document.getElementById("filename").value);
+    sessionStorage.setItem("name", document.getElementById("name").value);
+    sessionStorage.setItem("title", document.getElementById("title").value);
 }
 
 // Restore form data on load
@@ -36,15 +44,19 @@ window.addEventListener('load', function() {
 
     tmp = sessionStorage.getItem("namespace");
     if (tmp !== null) {
-        n1 = tmp;
         document.getElementById("namespace").value = tmp;
     }
 
-    tmp = sessionStorage.getItem("filename");
+    tmp = sessionStorage.getItem("name");
     if (tmp !== null) {
-        n2 = tmp;
-        document.getElementById("filename").value = tmp;
+        document.getElementById("name").value = tmp;
     }
+
+    tmp = sessionStorage.getItem("title");
+    if (tmp !== null) {
+        document.getElementById("title").value = tmp;
+    }
+
 
     updateFullname();
 });

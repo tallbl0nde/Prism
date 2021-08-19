@@ -2,6 +2,7 @@ var createError = require('http-errors');
 var database = require('./database');
 var express = require('express');
 var flash = require('connect-flash');
+var ResourcePack = require('./resourcePack');
 var fs = require('fs');
 var path = require('path');
 var bodyParser = require('body-parser')
@@ -57,6 +58,7 @@ plugins.forEach(plugin => {
     if (plugin.onInitialize != null) {
         plugin.onInitialize();
     }
+
     console.log(`Plugin '${plugin.name}' initialized.`);
 });
 

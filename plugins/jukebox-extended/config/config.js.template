@@ -2,11 +2,16 @@ const config = {
     // Path to plugin config file
     configFile: "",
 
-    // Path to extracted resource pack
-    resourcePackPath: "",
+    jukeLooper: {
+        // Path to JukeLooper config file (if enabled)
+        configFile: "",
 
-    // Path to resource pack (.zip file)
-    zipFile: ""
+        // Whether to use JukeLooper integration
+        enabled: false
+    },
+
+    // Temp directory to write files to
+    tempDir: ""
 };
 
 module.exports = config;

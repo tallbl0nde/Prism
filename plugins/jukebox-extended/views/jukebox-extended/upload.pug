@@ -14,7 +14,7 @@ block pluginContent
 
             div.col-8
                 div(style="padding-top: 10vh")
-                form(action="/jukebox-extended/audios" method="POST" onsubmit="onFormSubmit()")
+                form(action="/jukebox-extended/audios" enctype="multipart/form-data" method="POST" onsubmit="onFormSubmit()")
                     label(for="file").form-label Audio File
                     input(name="file" type="file" accept="audio/ogg" required).form-control#file
                     div.form-text.pt-2 Only .ogg files are supported by Minecraft. In order for the audio to sound like it is coming from the block, ensure a mono file is used.
@@ -28,11 +28,27 @@ block pluginContent
                             div.form-text.pt-2 The 'namespace' of a music disc is used to group multiple together. If you are unsure of what to enter, your username is a good idea. Lowercase characters, hyphens and underscores are permitted.
 
                         div.col-7
-                            label(for="filename").form-label Audio Name
-                            input(type="text" minlength="1" maxlength="50" oninput="updateText(this)" name="filename" required).form-control#filename
-                            div.form-text.pt-2 The name of the music disc. Lowercase characters, hyphens and underscores are permitted.
+                            label(for="name").form-label Name
+                            input(type="text" minlength="1" maxlength="50" oninput="updateText(this)" name="name" required).form-control#name
+                            div.form-text.pt-2 The 'name' of the music disc. Lowercase characters, hyphens and underscores are permitted.
 
                     div.form-text.pt-2#fullname Choose the namespace and name for the audio to view the final ID for the music disc.
+                    div.separator
+
+                    div.row
+                        div.col
+                            label(for="title").form-label Full Title
+                            input(type="text" minlength="1" maxlength="70" oninput="updateText2(this)" name="title" required).form-control#title
+                            div.form-text.pt-2 The title of the music disc. This is the name that will be shown in-game. Only alphanumeric characters, hyphens, underscores and brackets are permitted.
+
+                    div.separator
+
+                    div.row
+                        div.col
+                            div.form-check
+                                input(type="checkbox" name="drop" value="").form-check-input#drop
+                                label(for="drop").form-check-label Drop from Creepers
+                            div.form-text.pt-2 Toggle whether this music disc has a chance to be dropped by a creeper when killed by a skeleton.
 
                     div.separator
 

@@ -1,3 +1,21 @@
+// Helper to format duration to a string
+function formatDuration(seconds) {
+    let secs = seconds % 60;
+    let mins = Math.floor(seconds/60);
+    let hours = Math.floor(mins/60);
+    mins %= 60;
+
+    hours = hours.toString().padStart(2, "0");
+    mins = mins.toString().padStart(2, "0");
+    secs = secs.toString().padStart(2, "0");
+
+    if (hours == 0) {
+        return `${mins}:${secs}`;
+    } else {
+        return `${hours}:${mins}:${secs}`;
+    }
+}
+
 // Helper to format bytes to a string
 // Won't work for >= 1024TB
 function formatBytes(bytes) {
@@ -37,3 +55,4 @@ function formatBytes(bytes) {
 }
 
 module.exports.formatBytes = formatBytes;
+module.exports.formatDuration = formatDuration;

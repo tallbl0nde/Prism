@@ -1,59 +1,91 @@
-const config = require('../config/config');
+const Config = require('../config/config');
+const deasync = require('deasync');
 const express = require('express');
 const fs = require('fs');
+const { getAudioDurationInSeconds } = require('get-audio-duration');
+const multer = require('multer');
 const path = require('path');
 const router = express.Router();
+const upload = multer()
 
 var Audio = require('../models/audio');
+var SoundResourcePack = require('../soundResourcePack');
 
 // POST /audios/
 // [C]reate
-// Creates a file for the uploaded image and adds an entry to the database.
-router.post('/', function(req, res, next) {
+// Creates a file for the uploaded audio and adds an entry to the database.
+router.post('/', upload.any(), function(req, res, next) {
     // Refuse upload if over limit
     if (res.locals.user.usage.bytes >= req.globalConfig.storageLimit) {
         req.flash('error', "Your storage quota is full. Please free some space and try again.");
-        return res.redirect('/audios/upload');
+        return res.redirect('jukebox-extended/upload');
     }
 
-    // Strip invalid characters from name, limit to 50 chars
-    req.body.name = req.body.name.replace(/[^a-zA-Z0-9-_]/g, "");
+    // Strip invalid characters from fields
+    req.body.namespace = req.body.namespace.replace(/[^a-z0-9-_]/g, "");
+    req.body.namespace = req.body.namespace.substring(0, 20);
+    req.body.name = req.body.name.replace(/[^a-z0-9-_]/g, "");
     req.body.name = req.body.name.substring(0, 50);
+    req.body.title = req.body.title.replace(/[^A-Za-z0-9-_\(\)]/g, "");
+    req.body.title = req.body.title.substring(0, 70);
+
+    // Abort if empty namespace
+    if (req.body.namespace.trim().length == 0) {
+        req.flash('error', "The namespace field was left blank, please provide a namespace for the audio.");
+        return res.redirect('upload');
+    }
 
     // Abort if empty name
     if (req.body.name.trim().length == 0) {
-        req.flash('error', "The name field was left blank, please provide a name for the image.");
-        return res.redirect('/imagemaps/upload');
+        req.flash('error', "The name field was left blank, please provide a name for the audio.");
+        return res.redirect('upload');
     }
 
-    // Abort if invalid dimensions
-    req.body.width = Number(req.body.width);
-    req.body.height = Number(req.body.height);
-    if (req.body.width === 0 || req.body.height === 0) {
-        req.flash('error', "No dimensions were provided. Please provide the size to scale the image to.");
-        return res.redirect('/imagemaps/upload');
+    // Abort if empty title
+    if (req.body.title.trim().length == 0) {
+        req.flash('error', "The title field was left blank, please provide a title for the audio.");
+        return res.redirect('upload');
     }
 
-    // Limit dimensions to 1280 x 1280
-    if (req.body.width > 1280) {
-        req.body.width = 1280;
+    // Check if audio with same name exists
+    let pack = new SoundResourcePack(req.globalConfig.resourcePack.path);
+    if (pack.fetchSound(req.body.namespace, req.body.name) != null) {
+        req.flash('error', "Audio already exists with the same namespace and name. Please choose different values.");
+        return res.redirect('upload');
     }
 
-    if (req.body.height > 1280) {
-        req.body.height = 1280;
+    // Get duration
+    let data = req.files[0].buffer;
+    let filePath = path.join(Config.tempDir, "tmp.ogg");
+    fs.writeFileSync(filePath, data);
+
+    let duration = -1;
+    getAudioDurationInSeconds(filePath).then(secs => {
+        duration = secs;
+    }).catch(() => {
+        duration = 0;
+    });
+
+    // Wait for async call to finish
+    deasync.loopWhile(() => {
+        return duration < 0;
+    });
+    fs.unlinkSync(filePath);
+
+    // Create object and save
+    let audio = Audio.createNew(req.body.drop === undefined ? false : req.body.drop, req.body.namespace, req.body.name, req.body.title, duration, data.length, req.user.id);
+
+    try {
+        audio.save(pack, data);
+
+    } catch (err) {
+        console.log("Couldn't save audio file: " + err.message);
+        req.flash('error', "Couldn't save audio file, please try again later.");
+        return res.redirect('upload');
     }
 
-    // Form paths
-    const filename = req.body.name + req.body.extension;
-    const filepath = path.join(config.imagesPath, filename);
-
-    // Abort if file exists
-    if (fs.existsSync(filepath)) {
-        req.flash('error', "An image with that name exists, please try a different name.");
-        return res.redirect('/imagemaps/upload');
-    }
-
-    // TODO: Finish
+    req.flash('info', "Audio file uploaded successfully! Your music disc will be available after the next server restart.");
+    res.redirect('/jukebox-extended');
 });
 
 // GET /audios/:id/download
@@ -61,67 +93,22 @@ router.post('/', function(req, res, next) {
 // Returns the audio file for the given audio ID.
 router.get('/:id/download', function(req, res, next) {
     // Get audio for ID, sending 404 if not found
-    let image = Audio.findByID(req.params.id);
-    if (image === null) {
-        return res.sendStatus(404);
-    }
-
-    // Verify the audio file exists
-    // TODO: Implement properly
-    const filepath = path.join(config.imagesPath, image.fileName);
-    if (!fs.existsSync(filepath)) {
-        return res.sendStatus(404);
-    }
-
-    res.type("image/png");
-    res.download(filepath);
-});
-
-// POST /audios/:id
-// [U]pdate
-// Renames the audio with the given ID.
-router.post('/:id', function(req, res, next) {
-    // Get audio for ID
     let audio = Audio.findByID(req.params.id);
     if (audio === null) {
         return res.sendStatus(404);
     }
 
-    // Only let the user who created it rename it
-    if (audio.userID != req.user.id) {
-        return res.sendStatus(403);
+    // Verify the audio file exists
+    let pack = new SoundResourcePack(req.globalConfig.resourcePack.path);
+    let data = pack.fetchSound(audio.namespace, audio.name);
+    if (data === null) {
+        return res.sendStatus(404);
     }
 
-    // Sanitize name
-    req.body.name = req.body.name.replace(/[^a-zA-Z0-9-_]/g, "");
-    req.body.name = req.body.name.substring(0, 50);
-
-    const filename = req.body.name + req.body.extension;
-    const filepath = path.join(config.imagesPath, filename);
-
-
-    // Abort if empty name
-    if (req.body.name.trim().length == 0) {
-        return res.sendStatus(400);
-    }
-
-    // Make sure destination doesn't exist
-    if (fs.existsSync(filepath)) {
-        return res.sendStatus(400);
-    }
-
-    // Set new name and save
-    image.fileName = filename;
-    try {
-        image.save();
-    } catch (err) {
-        console.log("Couldn't rename image: " + err.message);
-        return res.sendStatus(500);
-    }
-
-    req.flash('info', "Image renamed successfully.");
-    res.sendStatus(200);
+    res.type("audio/ogg");
+    res.end(data);
 });
+
 
 // DELETE /audios/:id
 // [D]elete
@@ -130,18 +117,18 @@ router.delete('/:id', function(req, res, next) {
     // Get audio for ID
     let audio = Audio.findByID(req.params.id);
     if (audio === null) {
-        req.flash('error', "Couldn't delete image: the requested image couldn't be found.");
+        req.flash('error', "Couldn't delete audio: the requested audio couldn't be found.");
         return res.sendStatus(404);
     }
 
     // Only let the user who created it or admin delete it
     if (!(audio.userID == req.user.id || req.user.isAdmin === true)) {
-        req.flash('error', "You do not have permission to delete this image.");
+        req.flash('error', "You do not have permission to delete this audio.");
         return res.sendStatus(403);
     }
 
     try {
-        audio.remove();
+        audio.remove(new SoundResourcePack(req.globalConfig.resourcePack.path));
     } catch (err) {
         console.log("Couldn't delete audio file: " + err.message);
         req.flash('error', "An unexpected error occurred. Please try again later.");

@@ -22,10 +22,12 @@ router.get('/', function(req, res, next) {
     res.locals.audios = req.userAudios.map(audio => {
         let d = new Date(audio.uploadDate * 1000);
 
-        // TODO: Finish
         return {
             id: audio.id,
-            name: `${audio.namespace}.${audio.fileName}`,
+            command: `/disc ${audio.namespace}.${audio.name}`,
+            name: `${audio.title}`,
+            namespace: `${audio.namespace}.${audio.name}`,
+            duration: utils.formatDuration(audio.duration),
             downloadPath: `/jukebox-extended/audios/${audio.id}/download`,
             size: utils.formatBytes(audio.size),
             uploadDate: `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear().toString().padStart(2, "0").substr(-2)} ${d.getHours()}:${d.getMinutes().toString().padStart(2, "0")}`
@@ -53,8 +55,11 @@ router.get('/all', function(req, res, next) {
 
         return {
             id: audio.id,
-            name: `${audio.namespace}.${audio.fileName}`,
-            downloadPath: `/imagemaps/images/${audio.id}/download`,
+            command: `/disc ${audio.namespace}.${audio.name}`,
+            name: `${audio.title}`,
+            namespace: `${audio.namespace}.${audio.name}`,
+            duration: utils.formatDuration(audio.duration),
+            downloadPath: `/jukebox-extended/audios/${audio.id}/download`,
             size: utils.formatBytes(audio.size),
             uploadDate: `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear().toString().padStart(2, "0").substr(-2)} ${d.getHours()}:${d.getMinutes().toString().padStart(2, "0")}`,
             owner: users.find(user => user.id == audio.userID).username,

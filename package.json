@@ -11,18 +11,23 @@
     "bootstrap-icons": "^1.4.1",
     "connect-flash": "^0.1.1",
     "cookie-parser": "~1.4.4",
+    "deasync": "^0.1.22",
     "debug": "~2.6.9",
     "express": "~4.16.1",
     "express-session": "^1.17.1",
+    "get-audio-duration": "^3.0.0",
     "hamljs": "^0.6.2",
     "http-errors": "~1.6.3",
+    "jszip-sync": "^3.2.1-sync",
     "memory-cache": "^0.2.0",
     "morgan": "~1.9.1",
+    "multer": "^1.4.3",
     "node-sync": "^0.5.6",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "passport-remember-me": "^0.0.1",
     "pug": "^3.0.2",
-    "sharp": "^0.28.2"
+    "sharp": "^0.28.2",
+    "yaml": "^1.10.2"
   }
 }
