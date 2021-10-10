@@ -15,18 +15,8 @@
 }
 
 #image {
-    cursor: pointer;
     height: auto;
     max-width: 6em;
-    transition: all 200ms ease-out;
-}
-
-#image:hover {
-    opacity: 50%;
-}
-
-.image-upload > input {
-    display: none;
 }
 
 .options {

@@ -74,8 +74,8 @@ app.set('view engine', 'pug');
 app.set('views', views);
 
 app.use(logger('dev'));
-app.use(express.json({ limit: '5mb' }));
-app.use(bodyParser.urlencoded({ extended: false, limit: '5mb', parameterLimit: 5000 }));
+app.use(express.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: false, limit: '50mb', parameterLimit: 5000 }));
 app.use(cookieParser());
 app.use(session({
     resave: false,
@@ -276,6 +276,7 @@ app.use(function(req, res, next) {
             isAdmin: req.user.isAdmin,
             image: req.user.imagePath.replace("public/", "/"),
             username: req.user.username,
+            uuid: req.user.uuid,
             usage: req.diskUsageForUser(req.user)
         }
     }

@@ -23,6 +23,7 @@ class User {
         user._inDB = true;
         user._id = data.id;
         user._username = data.username;
+        user._uuid = data.uuid;
         user._passwordSalt = data.password_salt;
         user._passwordHash = data.password_hash;
         user._createdTimestamp = data.created_timestamp;
@@ -34,7 +35,7 @@ class User {
     }
 
     // Creates a new user object with the passed values.
-    static createNew(username, password, isAdmin, imagePath) {
+    static createNew(username, uuid, password, isAdmin, imagePath) {
         let user = new User();
 
         user._inDB = false;
@@ -44,6 +45,11 @@ class User {
             throw new Error("Username must be a string.");
         }
         user._username = username;
+
+        if (typeof(uuid) != "string") {
+            throw new Error("UUID must be a string.");
+        }
+        user._uuid = uuid;
 
         if (typeof(password) != "string") {
             throw new Error("Password must be a string.");
@@ -83,6 +89,16 @@ class User {
     // Sets the user's username.
     set username(username) {
         this._username = username;
+    }
+
+    // Gets the user's UUID.
+    get uuid() {
+        return this._uuid;
+    }
+
+    // Sets the user's UUID.
+    set uuid(uuid) {
+        this._uuid = uuid;
     }
 
     // Gets the date the user joined.
@@ -151,7 +167,7 @@ class User {
 
     // Returns all users in the database.
     static findAll() {
-        let records = database.queryAll(`SELECT id, username, password_salt, password_hash, created_timestamp, failed_logins, is_admin, image_path FROM Users;`)
+        let records = database.queryAll(`SELECT id, username, uuid, password_salt, password_hash, created_timestamp, failed_logins, is_admin, image_path FROM Users;`)
         if (records === undefined) {
             return null;
         }
@@ -164,7 +180,7 @@ class User {
     // Finds a User for the given id.
     // Returns null if one couldn't be found.
     static findByID(id) {
-        let record = database.queryOne(`SELECT id, username, password_salt, password_hash, created_timestamp, failed_logins, is_admin, image_path
+        let record = database.queryOne(`SELECT id, username, uuid, password_salt, password_hash, created_timestamp, failed_logins, is_admin, image_path
                                         FROM Users WHERE id = $id;`, {
                                             id: id
                                         });
@@ -179,7 +195,7 @@ class User {
     // Finds a User for the given username.
     // Returns null if one couldn't be found.
     static findByUsername(username) {
-        let record = database.queryOne(`SELECT id, username, password_salt, password_hash, created_timestamp, failed_logins, is_admin, image_path
+        let record = database.queryOne(`SELECT id, username, uuid, password_salt, password_hash, created_timestamp, failed_logins, is_admin, image_path
                                         FROM Users WHERE username = $username;`, {
                                             username: username
                                         });
@@ -207,12 +223,13 @@ class User {
             // Insert an entry if not in database
             if (this._inDB === false) {
                 database.query(`INSERT INTO Users (
-                                username, password_salt, password_hash, created_timestamp, failed_logins, is_admin, image_path
+                                username, uuid, password_salt, password_hash, created_timestamp, failed_logins, is_admin, image_path
                                 ) VALUES (
-                                $username, $passwordSalt, $passwordHash, $createdTimestamp, $failedLogins, $isAdmin, $imagePath
+                                $username, $uuid, $passwordSalt, $passwordHash, $createdTimestamp, $failedLogins, $isAdmin, $imagePath
                                 );`,
                                 {
                                     username: this._username,
+                                    uuid: this._uuid,
                                     passwordSalt: this._passwordSalt,
                                     passwordHash: this._passwordHash,
                                     createdTimestamp: this._createdTimestamp,
@@ -224,11 +241,12 @@ class User {
             // Otherwise update
             } else {
                 database.query(`UPDATE Users SET
-                                username = $username, password_salt = $passwordSalt, password_hash = $passwordHash,
+                                username = $username, uuid = $uuid, password_salt = $passwordSalt, password_hash = $passwordHash,
                                 created_timestamp = $createdTimestamp, failed_logins = $failedLogins, is_admin = $isAdmin, image_path = $imagePath
                                 WHERE id = $id;`,
                                 {
                                     username: this._username,
+                                    uuid: this._uuid,
                                     passwordSalt: this._passwordSalt,
                                     passwordHash: this._passwordHash,
                                     createdTimestamp: this._createdTimestamp,

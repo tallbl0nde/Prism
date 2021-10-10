@@ -57,6 +57,12 @@ function query(statement, binds = {}) {
 // Throws an Error if an error cccurs.
 function initialize() {
     doInTransaction(function() {
+        // Create KeyValuePairs table
+        query(`CREATE TABLE KeyValuePairs (
+            "key" TEXT NOT NULL UNIQUE,
+            "value" TEXT NOT NULL
+        );`);
+
         // Create RememberMeTokens table
         query(`CREATE TABLE RememberMeTokens (
             "token"	BLOB NOT NULL UNIQUE,

@@ -23,39 +23,6 @@ router.get('/', function(req, res, next) {
     res.render('account');
 });
 
-// POST /image
-// Updates the user's image.
-router.post('/image', function(req, res, next) {
-    // Create file path from user id
-    let filepath = path.join("public/images/users", req.user.id.toString() + ".jpg");
-
-    // Resize image to requested size and write to filesystem
-    const oldImage = req.body.data.split(";base64,").pop();
-    sharp(Buffer.from(oldImage, "base64"))
-        .jpeg()
-        .resize(200, 200)
-        .toFile(filepath)
-        .then(() => {
-            // Update database
-            req.user.imagePath = filepath;
-            try {
-                req.user.save();
-            } catch (err) {
-                req.flash('error', "The new image couldn't be added to the database. Please try again later.");
-                return res.redirect('/account');
-            }
-
-            // Redirect back
-            req.flash('info', "Image changed successfully!");
-            return res.redirect('/account');
-        })
-        .catch(err => {
-            console.log(err.message);
-            req.flash('error', "An internal server error occurred. Please try again later.");
-            return res.redirect('/account');
-        });
-});
-
 // POST /password
 // Updates the user's password.
 router.post('/password', function(req, res, next) {
@@ -84,31 +51,5 @@ router.post('/password', function(req, res, next) {
     req.flash('info', 'Password changed successfully!');
     res.redirect('/account');
 });
-
-// POST /username
-// Updates the user's username.
-router.post('/username', function(req, res, next) {
-    // Sanitize name
-    req.body.name = req.body.name.replace(/[^a-zA-Z0-9-_]/g, "");
-    req.body.name = req.body.name.substring(0, 20);
-
-    // Ensure we have a name
-    if (req.body.name.trim().length == 0) {
-        return res.sendStatus(400);
-    }
-
-    // Update user object and save
-    req.user.username = req.body.name;
-    try {
-        req.user.save();
-    } catch (err) {
-        console.log("Couldn't update username: " + err.message);
-        res.sendStatus(500);
-    }
-
-    req.flash('info', "Username changed successfully!")
-    res.sendStatus(200);
-});
-
 
 module.exports = router;

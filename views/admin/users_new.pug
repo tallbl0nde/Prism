@@ -10,9 +10,9 @@ block pluginContent
 
                 div.mt-4
                 form(action="/admin/users/new" method="POST")
-                    label(for="username").form-label Username
-                    input(type="text" name="username" oninput="updateName()" maxlength="20" required).form-control#name
-                    div.form-text The username used to login to the account. Only A-Z, a-z, 0-9, underscores and hyphens are allowed. Up to 20 characters are permitted.
+                    label(for="uuid").form-label UUID
+                    input(type="text" name="uuid" oninput="updateUUID()" maxlength="32" required).form-control#name
+                    div.form-text The UUID of the user account you wish to add. Hyphens will be removed.
 
                     div.separator
 
