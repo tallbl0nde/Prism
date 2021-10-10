@@ -52,6 +52,7 @@ router.get('/all', function(req, res, next) {
     // Create images from database
     res.locals.audios = Audio.findAll().map(audio => {
         let d = new Date(audio.uploadDate * 1000);
+        let owner = users.find(user => user.id == audio.userID);
 
         return {
             id: audio.id,
@@ -62,7 +63,8 @@ router.get('/all', function(req, res, next) {
             downloadPath: `/jukebox-extended/audios/${audio.id}/download`,
             size: utils.formatBytes(audio.size),
             uploadDate: `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear().toString().padStart(2, "0").substr(-2)} ${d.getHours()}:${d.getMinutes().toString().padStart(2, "0")}`,
-            owner: users.find(user => user.id == audio.userID).username,
+            owner: owner.username,
+            ownerImage: owner.imagePath.replace("public/", "/"),
             isOwner: (req.user.id == audio.userID)
         };
     });

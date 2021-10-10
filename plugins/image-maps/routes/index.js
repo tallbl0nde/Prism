@@ -51,6 +51,7 @@ router.get('/all', function(req, res, next) {
     // Create images from database
     res.locals.images = Image.findAll().map(image => {
         let d = new Date(image.uploadDate * 1000);
+        let owner = users.find(user => user.id == image.userID);
 
         return {
             id: image.id,
@@ -61,7 +62,8 @@ router.get('/all', function(req, res, next) {
             path: path.join(config.imagesPath, image.fileName),
             size: utils.formatBytes(image.size),
             uploadDate: `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear().toString().padStart(2, "0").substr(-2)} ${d.getHours()}:${d.getMinutes().toString().padStart(2, "0")}`,
-            owner: users.find(user => user.id == image.userID).username,
+            owner: owner.username,
+            ownerImage: owner.imagePath.replace('public/', '/'),
             isOwner: (req.user.id == image.userID)
         };
     });

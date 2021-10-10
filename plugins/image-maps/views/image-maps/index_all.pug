@@ -32,12 +32,12 @@ block pluginContent
                                 div.col-8
                                     div.card-body
                                         h6.card-title= image.name
+                                        div.d-flex.align-items-center
+                                            img(src=`${image.ownerImage}`).owner-image.pe-2
+                                            span.card-text.text-secondary= `${image.owner}`
                                         div
                                             i.bi-hdd.pe-2.text-secondary
                                             span.card-text.text-secondary= image.size
-                                        div
-                                            i.bi-person.pe-2.text-secondary
-                                            span.card-text.text-secondary= image.owner
                                         div
                                             i.bi-clock.pe-2.text-secondary
                                             span.card-text.text-secondary= image.uploadDate

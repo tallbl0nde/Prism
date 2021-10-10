@@ -14,6 +14,8 @@ class KeyValuePair {
             throw new Error("Value must be a string.");
         }
         this._value = value;
+
+        this._inDB = false;
     }
 
     // --------------------------------------------------
@@ -56,7 +58,9 @@ class KeyValuePair {
         }
 
         // Convert to token object
-        return new KeyValuePair(record.key, record.value);
+        let obj = new KeyValuePair(record.key, record.value);
+        obj._inDB = true;
+        return obj;
     }
 
     // Deletes the KeyValuePair from the database.
@@ -68,10 +72,22 @@ class KeyValuePair {
 
     // Saves the KeyValuePair to the database.
     save() {
-        database.query(`INSERT INTO KeyValuePairs (key, value) VALUES ($key, $value);`, {
-            key: this._key,
-            value: this._value
-        });
+        database.doInTransaction(function() {
+            // Insert an entry if not in database
+            if (this._inDB === false) {
+                database.query(`INSERT INTO KeyValuePairs (key, value) VALUES ($key, $value);`, {
+                    key: this._key,
+                    value: this._value
+                });
+
+            // Otherwise update
+            } else {
+                database.query(`UPDATE KeyValuePairs SET value = $value WHERE key = $key;`, {
+                    key: this._key,
+                    value: this._value
+                });
+            }
+        }.bind(this));
     }
 }
 

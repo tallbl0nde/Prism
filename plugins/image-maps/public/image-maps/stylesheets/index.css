@@ -66,6 +66,13 @@
     margin-top: 0.6em;
 }
 
+.owner-image {
+    height: 1em;
+    max-height: 100%;
+    max-width: 100%;
+    text-align: center;
+}
+
 #bottom-navbar {
     border-top: lightgray 1px solid;
     bottom: 0;

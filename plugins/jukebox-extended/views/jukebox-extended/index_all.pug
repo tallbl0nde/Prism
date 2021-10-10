@@ -29,15 +29,15 @@ block pluginContent
                                 span.pb-3.card-text.text-secondary= audio.namespace
                                 p
 
+                                div.d-flex.align-items-center
+                                    img(src=`${audio.ownerImage}`).owner-image.pe-2
+                                    span.card-text.text-secondary= `${audio.owner}`
                                 div
                                     i.bi-stopwatch.pe-2.text-secondary
                                     span.card-text.text-secondary= audio.duration
                                 div
                                     i.bi-hdd.pe-2.text-secondary
                                     span.card-text.text-secondary= audio.size
-                                div
-                                    i.bi-person.pe-2.text-secondary
-                                    span.card-text.text-secondary= audio.owner
                                 div
                                     i.bi-clock.pe-2.text-secondary
                                     span.card-text.text-secondary= audio.uploadDate
