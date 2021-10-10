@@ -48,3 +48,8 @@ function confirmDeleteUser(button) {
     xhttp.open("DELETE", path, true);
     xhttp.send();
 }
+
+function onRefreshClick() {
+    document.getElementById("refresh-button").setAttribute("disabled", "");
+    document.getElementById("refresh-spinner").style.display = "inline-block";
+}

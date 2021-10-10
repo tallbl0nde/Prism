@@ -1,7 +1,9 @@
 var database = require('../database');
 var express = require('express');
+let http = require('http');
 var minecraftApi = require('../minecraftApi');
 var router = express.Router();
+var sharp = require('sharp');
 var utils = require('../utils');
 
 var KeyValuePair = require('../models/keyvaluepair');
@@ -37,6 +39,7 @@ router.get('/users', function(req, res, next) {
         let usage = req.diskUsageForUser(user);
         return {
             id: user.id,
+            imagePath: user.imagePath.replace("public/", "/"),
             username: user.username,
             uuid: user.uuid,
             creationTime: formatTimestamp(user.createdTimestamp * 1000),
@@ -76,22 +79,66 @@ router.get('/users/refresh', function(req, res, next) {
                 return res.redirect('/admin/users');
             }
 
-            // Update user data
-            // TODO: Skin head/image
-            user.username = profile.username;
-            user.save();
+            // Callback to update user info once image done
+            let updateInfo = function(user, imagePath) {
+                user.imagePath = imagePath;
+                user.username = profile.username;
+                user.save();
 
-            // Get profile for next user
-            if (index < users.length - 1) {
-                return updateUser(index + 1);
+                // Get profile for next user
+                if (index < users.length - 1) {
+                    return updateUser(index + 1);
 
-            // Or if there are no more users, redirect back to user page
+                // Or if there are no more users, redirect back to user page
+                } else {
+                    let now = Math.floor(new Date().getTime() / 1000).toString();
+                    let lastRefresh = KeyValuePair.findByKey("userDataLastRefreshTimestamp");
+                    if (lastRefresh != null) {
+                        lastRefresh.value = now;
+                    } else {
+                        lastRefresh = new KeyValuePair("userDataLastRefreshTimestamp", now);
+                    }
+                    lastRefresh.save();
+
+                    req.flash('info', "Updated user data successfully.");
+                    return res.redirect('/admin/users')
+                }
+            }
+
+            // Callback to resize image and save once downloaded
+            let resizeImage = function(user, image) {
+                // Resize image and save
+                let imagePath = `public/images/users/${user.uuid}.png`;
+                if (image != null) {
+                    sharp(image).extract({
+                        width: 8,
+                        height: 8,
+                        left: 8,
+                        top: 8
+                    }).resize({
+                        kernel: sharp.kernel.nearest,
+                        width: 160,
+                        height: 160
+                    }).toFile(imagePath).then(updateInfo(user, imagePath));
+                } else {
+                    updateInfo(user, 'public/images/users/default.png');
+                }
+            }
+
+            // Download and crop skin to get player's head
+            let image = [];
+            if (profile.skinURL.length > 0) {
+                http.get(profile.skinURL, response => {
+                    response.on('data', chunk => {
+                        image.push(chunk);
+                    });
+
+                    response.on('end', () => {
+                        resizeImage(user, Buffer.concat(image));
+                    });
+                });
             } else {
-                let lastRefresh = new KeyValuePair("userDataLastRefreshTimestamp", Math.floor(new Date().getTime() / 1000).toString());
-                lastRefresh.save();
-
-                req.flash('info', "Updated user data successfully.");
-                return res.redirect('/admin/users')
+                resizeImage(user, null);
             }
         })
     }

@@ -7,8 +7,11 @@ block pluginContent
                 h5 User Management
                 p= lastRefresh
             div.d-flex.justify-content-right.align-items-center
+                span#refresh-spinner
+                    div(role="status").spinner-border.spinner-border-sm.text-primary
+                        span.sr-only
                 div.ps-3
-                    a(href="/admin/users/refresh").btn.btn-primary
+                    a(href="/admin/users/refresh" onclick="onRefreshClick()").btn.btn-primary#refresh-button
                         i.bi-arrow-repeat.pe-2
                         span Refresh User Data
                 div.ps-3
@@ -23,6 +26,7 @@ block pluginContent
                 thead
                     tr
                         th(scope="col") ID
+                        th(scope="col" width="10") Image
                         th(scope="col") Username
                         th(scope="col") UUID
                         th(scope="col") Join Date
@@ -33,6 +37,8 @@ block pluginContent
                     for u in users
                         tr
                             th(scope="row")= u.id
+                            td(valign="middle" align="center")
+                                img(src=`${u.imagePath}`).table-image
                             td= u.username
                             td= u.uuid
                             td= u.creationTime

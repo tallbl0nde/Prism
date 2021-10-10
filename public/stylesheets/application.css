@@ -24,8 +24,18 @@
     color: grey;
 }
 
+#refresh-spinner {
+    display: none;
+}
+
 .separator {
     border-top: 1px solid lightgray;
     margin-top: 1.5em;
     margin-bottom: 1.2em;
+}
+
+.table-image {
+    width: 50%;
+    max-height: 100%;
+    max-width: 100%;
 }
