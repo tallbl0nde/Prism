@@ -25,12 +25,21 @@ block content
             hr
             ul.nav.nav-pills.flex-column
                 li.nav-item
+                    if admin && admin.page === "statistics"
+                        a(href="/admin/statistics/").nav-link.text-white.active
+                            i.bi-clipboard-data
+                            span Server Statistics
+                    else
+                        a(href="/admin/statistics/").nav-link.text-white
+                            i.bi-clipboard-data
+                            span Server Statistics
+
                     if admin && admin.page === "users"
-                        a(href="/admin/users").nav-link.text-white.active
+                        a(href="/admin/users/").nav-link.text-white.active
                             i.bi-people
                             span User Management
                     else
-                        a(href="/admin/users").nav-link.text-white
+                        a(href="/admin/users/").nav-link.text-white
                             i.bi-people
                             span User Management
 

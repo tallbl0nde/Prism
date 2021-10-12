@@ -1,4 +1,7 @@
 const config = {
+    // URL to Plan server
+    planUrl: "",
+
         resourcePack: {
         // Path to resource pack .zip file. Will be created if it doesn't exist.
         path: "",

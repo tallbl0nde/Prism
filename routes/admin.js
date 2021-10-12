@@ -1,3 +1,4 @@
+var config = require('../config/config');
 var database = require('../database');
 var express = require('express');
 let http = require('http');
@@ -25,6 +26,18 @@ router.use(function(req, res, next) {
     }
 
     next();
+});
+
+// GET /admin/statistics
+// Renders the stats view, containing the plan iframe.
+router.get('/statistics', function(req, res, next) {
+    res.locals.path = config.planUrl;
+
+    // Indicate we're on the stats page
+    res.locals.admin = {
+        page: "statistics"
+    };
+    res.render('admin/statistics');
 });
 
 // GET /admin/users

@@ -47,7 +47,7 @@ plugins.sort(function(a, b) {
     if (a.name < b.name) {
         return -1;
     } else if (a.name > b.name) {
-        return -1;
+        return 1;
     }
 
     return 0;
@@ -266,7 +266,7 @@ app.use(function(req, res, next) {
                 name: plugin.name,
                 icon: plugin.icon,
                 path: plugin.path,
-                active: req.path.includes(plugin.path)
+                active: req.path.includes(plugin.path) && !req.path.includes("admin")
             };
         });
 
