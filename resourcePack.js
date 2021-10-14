@@ -148,7 +148,7 @@ class ResourcePack {
         let sha1 = crypto.createHash('sha1').update(zipped).digest('hex');
 
         // Update server.properties
-        const propFile = fs.readFileSync(Config.serverPropertiesLocation);
+        const propFile = fs.readFileSync(Config.server.propertiesLocation);
         let lines = propFile.toString().replace(/\r\n/g, '\n').split('\n');
         lines = lines.map(line => {
             let key = line.split('=')[0];
@@ -160,7 +160,7 @@ class ResourcePack {
             return line;
         });
 
-        fs.writeFileSync(Config.serverPropertiesLocation, lines.join('\n'));
+        fs.writeFileSync(Config.server.propertiesLocation, lines.join('\n'));
     }
 };
 

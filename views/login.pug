@@ -9,7 +9,9 @@ block content
             div.col-2
 
             div.col-8.shadow.bg-light#main-container
-                img(src="/images/logo.png")#logo
+                div.d-flex.justify-content-between.align-items-center#banner
+                    img(src="/images/logo.png")#logo
+                    p.text-secondary.pe-1.m-0= serverName
 
                 form(action="/login" method="POST")
                     div.input-group.login-field

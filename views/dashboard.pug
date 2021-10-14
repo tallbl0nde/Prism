@@ -8,6 +8,7 @@ block content
     div.d-flex.flex-column.p-3.text-white.bg-dark#sidebar
         a(href="/").d-flex.align-items-center.mb-3.mb-md-0.me-md-auto.text-white.text-decoration-none#logo-container
             img(src="/images/logo.png")#logo
+        h6#server-name= serverName
         hr
         ul.nav.nav-pills.flex-column.mb-auto
             for plugin in plugins

@@ -18,7 +18,6 @@ router.get('/login', function(req, res, next) {
         return res.redirect('/');
     }
 
-    res.locals.title = "Index Page";
     res.locals.text = {
         login: "Login",
         rememberMe: "Remember Me"

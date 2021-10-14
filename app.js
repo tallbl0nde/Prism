@@ -231,6 +231,7 @@ app.use(passport.authenticate("remember-me"));
 
 app.use(function(req, res, next) {
     req.globalConfig = config;
+    res.locals.serverName = req.globalConfig.serverName || "Minecraft Server";
 
     req.diskUsageForUser = function(user) {
         let bytes = 0;

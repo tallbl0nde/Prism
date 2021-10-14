@@ -2,7 +2,7 @@ const config = {
     // URL to Plan server
     planUrl: "",
 
-        resourcePack: {
+    resourcePack: {
         // Path to resource pack .zip file. Will be created if it doesn't exist.
         path: "",
 
@@ -13,8 +13,16 @@ const config = {
         version: 0
     },
 
-    // Path to server.properties file, used for updating some variables.
-    serverPropertiesLocation: "",
+    server: {
+        // Name of server. Shown in some locations throughout the app.
+        name: "",
+
+        // Short version of server.name. Should be around 3 characters max.
+        shortName: "",
+
+        // Path to server.properties file, used for updating some variables.
+        propertiesLocation: "",
+    },
 
     // Amount of storage allocated to each user, in bytes (defaults to 10MB)
     storageLimit: 10485760

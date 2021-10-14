@@ -7,9 +7,12 @@ body {
     background-image: linear-gradient(to bottom right, rgb(100, 255, 255), rgb(70, 175, 255));
 }
 
+#banner {
+    margin-bottom: 1.5em;
+}
+
 #logo {
     height: 2.5em;
-    margin-bottom: 1.5em;
 }
 
 #main-container {
