@@ -1,38 +1,39 @@
 extends application
 
 block stylesheets
-    link(rel="stylesheet" href="/stylesheets/index.css")
+    link(rel="stylesheet" href="/stylesheets/login.css")
 
 block content
     div.container
         div.row#main-row
-            div.col-2
+            div.col-1.col-sm-1.col-md-2.col-lg-3.col-xl-4
 
-            div.col-8.shadow.bg-light#main-container
-                div.d-flex.justify-content-between.align-items-center#banner
-                    img(src="/images/logo.png")#logo
-                    p.text-secondary.pe-1.m-0= serverName
+            div.col-10.col-sm-10.col-md-8.col-lg-6.col-xl-4
+                div.shadow.bg-light#main-container
+                    div.d-flex.justify-content-between.align-items-center#banner
+                        img(src="/images/logo.png")#logo
+                        p.text-secondary.pe-1.m-0= serverName
 
-                form(action="/login" method="POST")
-                    div.input-group.login-field
-                        span.input-group-text
-                            i.bi-person
-                        input.form-control(id="username" name="username" type="text" placeholder="Username" required)
+                    form(action="/login" method="POST")
+                        div.input-group.login-field
+                            span.input-group-text
+                                i.bi-person
+                            input.form-control(id="username" name="username" type="text" placeholder="Minecraft Username" required)
 
-                    div.input-group.login-field
-                        span.input-group-text
-                            i.bi-key
-                        input.form-control(id="password" name="password" type="password" placeholder="Password" required)
+                        div.input-group.login-field
+                            span.input-group-text
+                                i.bi-key
+                            input.form-control(id="password" name="password" type="password" placeholder="Password" required)
 
-                    div.separator
+                        div.separator
 
-                    div.d-flex.align-items-center
-                        button.btn.btn-primary(type="submit" style="margin-right: 1em")
-                            i.bi-box-arrow-in-right(style="margin-right: 0.6em")
-                            span= text.login
+                        div.d-flex.justify-content-between.align-items-center
+                            div.form-check.d-inline-block.no-margin.ms-2
+                                    input.form-check-input(type="checkbox" value="remember me" name="remember" id="remember")
+                                    label.form-check-label(for="remember")= text.rememberMe
 
-                        div.form-check.d-inline-block.no-margin
-                                input.form-check-input(type="checkbox" value="remember me" name="remember" id="remember")
-                                label.form-check-label(for="remember")= text.rememberMe
+                            div.d-flex.align-items-center.me-2
+                                button(type="submit")#login-button
+                                    h6.m-0.text-white= text.login
 
-            div.col-2
+            div.col-1.col-sm-1.col-md-2.col-lg-3.col-xl-4
