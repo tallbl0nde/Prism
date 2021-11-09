@@ -34,9 +34,7 @@ router.get('/statistics', function(req, res, next) {
     res.locals.path = config.planUrl;
 
     // Indicate we're on the stats page
-    res.locals.admin = {
-        page: "statistics"
-    };
+    res.locals.adminPage = "statistics";
     res.render('admin/statistics');
 });
 
@@ -63,9 +61,7 @@ router.get('/users', function(req, res, next) {
     });
 
     // Indicate we're on the user page
-    res.locals.admin = {
-        page: "users"
-    };
+    res.locals.adminPage = "users";
     res.render('admin/users');
 });
 
@@ -166,9 +162,7 @@ router.get('/users/refresh', function(req, res, next) {
 // Renders the add user view.
 router.get('/users/new', function(req, res, next) {
     // Indicate we're on the user page
-    res.locals.admin = {
-        page: "users"
-    };
+    res.locals.adminPage = "users";
     res.render('admin/users_new');
 });
 

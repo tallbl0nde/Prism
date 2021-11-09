@@ -4,15 +4,35 @@ body, html {
 }
 
 #avatar {
-    margin-right: 1em;
     max-height: 2.5em;
 }
 
-#logo {
+#avatar:hover {
+    opacity: 50%;
+}
+
+#loading {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transition: opacity 700ms;
+    background-color: white;
+    z-index: 100;
+}
+
+.logo {
     margin-bottom: 0;
-    max-width: 65%;
-    margin-left: auto;
-    margin-right: auto;
+    height: 3em;
+}
+
+.nav-link {
+    transition: background-color 300ms;
+}
+
+.nav-link:hover {
+    background-color: #363644;
 }
 
 #logo-container {
@@ -23,6 +43,7 @@ body, html {
     height: 100%;
     max-height: 100%;
     padding-left: 15em;
+    transition: padding-left 300ms;
 }
 
 .progress-label {
@@ -36,6 +57,7 @@ body, html {
     height: 100%;
     min-height: 100%;
     position: fixed;
+    transition: width 300ms;
     width: 15em;
 }
 
@@ -59,10 +81,14 @@ body, html {
 }
 
 .account-button {
+    transition: color 300ms;
     color: silver;
-    margin-right: 0.5em;
 }
 
-.nav-link i {
+.account-button:hover {
+    color: white;
+}
+
+.icon-separator {
     margin-right: 1em;
 }
