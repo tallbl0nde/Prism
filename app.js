@@ -233,6 +233,7 @@ app.use(function(req, res, next) {
     req.globalConfig = config;
     res.locals.serverName = req.globalConfig.server.name || "Minecraft Server";
     res.locals.shortServerName = req.globalConfig.server.shortName || "MC";
+    res.locals.sidebarSize = req.cookies.sidebarSize || "large";
 
     req.diskUsageForUser = function(user) {
         let bytes = 0;

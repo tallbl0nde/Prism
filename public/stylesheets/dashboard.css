@@ -11,17 +11,6 @@ body, html {
     opacity: 50%;
 }
 
-#loading {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    transition: opacity 700ms;
-    background-color: white;
-    z-index: 100;
-}
-
 .logo {
     margin-bottom: 0;
     height: 3em;
@@ -42,8 +31,15 @@ body, html {
 #pluginContent {
     height: 100%;
     max-height: 100%;
-    padding-left: 15em;
     transition: padding-left 300ms;
+}
+
+#pluginContent.content-sm {
+    padding-left: 15em;
+}
+
+#pluginContent.content-lg {
+    padding-left: 5em;
 }
 
 .progress-label {
@@ -58,7 +54,14 @@ body, html {
     min-height: 100%;
     position: fixed;
     transition: width 300ms;
+}
+
+#sidebar.content-sm {
     width: 15em;
+}
+
+#sidebar.content-lg {
+    width: 5em;
 }
 
 #server-name {
