@@ -16,11 +16,11 @@ body, html {
     height: 3em;
 }
 
-.nav-link {
+#sidebar .nav-link {
     transition: background-color 300ms;
 }
 
-.nav-link:hover {
+#sidebar .nav-link:hover {
     background-color: #363644;
 }
 

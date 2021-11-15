@@ -1,0 +1,27 @@
+extends ../../../../views/dashboard
+
+block pluginStylesheets
+    link(rel="stylesheet" href="/statistics/stylesheets/index.css")
+
+block pluginContent
+    nav.navbar.navbar-light.bg-light#top-navbar
+        div.container-fluid
+            span.navbar-brand.h1.m-0 Player Statistics
+            div.nav-item.dropdown
+                a.nav-link.dropdown-toggle#playerDropdownLink(role="button" data-bs-toggle="dropdown" href="#") Player
+                ul.dropdown-menu.dropdown-menu-end
+                    li
+                        h6.dropdown-header You
+                    li
+                        a.dropdown-item(href=`/statistics?uuid=${user.uuid}`).d-flex.align-items-center(class=(user.active ? "disabled" : ""))
+                            img(src=`${user.image}`).user-image.pe-2
+                            span.pe-3= `${user.username}`
+                    li
+                        hr.dropdown-divider
+                    li
+                        h6.dropdown-header Others
+                    for other in others
+                        li
+                            a.dropdown-item(href=`/statistics?uuid=${other.uuid}`).d-flex.align-items-center(class=(other.active ? "disabled" : ""))
+                                img(src=`${other.image}`).user-image.pe-2
+                                span.pe-3= `${other.username}`

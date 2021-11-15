@@ -1,0 +1,44 @@
+.card {
+    box-shadow: 0 0 10px rgb(230, 230, 230);
+    transition: all 100ms ease-out;
+
+    min-height: 8em;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.card > div {
+    max-height: 100%;
+}
+
+.card:hover {
+    box-shadow: 0 0 10px rgb(180, 180, 180);
+}
+
+.card-title {
+    margin-bottom: 0.3em;
+}
+
+.card-text {
+    margin-bottom: 0.4em;
+}
+
+.nav-link {
+    color: rgba(0, 0, 0, 0.55)
+}
+
+.nav-link:hover {
+    color: rgba(0, 0, 0, 0.75)
+}
+
+#top-navbar {
+    border-bottom: lightgray 1px solid;
+}
+
+.user-image {
+    height: 1em;
+    max-height: 100%;
+    max-width: 100%;
+    text-align: center;
+}
