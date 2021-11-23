@@ -6,7 +6,9 @@ block pluginStylesheets
 block pluginContent
     nav.navbar.navbar-light.bg-light#top-navbar
         div.container-fluid
-            span.navbar-brand.h1.m-0 Player Statistics
+            div.d-flex.align-items-center
+                img(src=`${selected.image}`).main-image.pe-2
+                span.navbar-brand.h1.m-0= `${selected.username}'s Statistics`
             div.nav-item.dropdown
                 a.nav-link.dropdown-toggle#playerDropdownLink(role="button" data-bs-toggle="dropdown" href="#") Player
                 ul.dropdown-menu.dropdown-menu-end
@@ -25,3 +27,35 @@ block pluginContent
                             a.dropdown-item(href=`/statistics?uuid=${other.uuid}`).d-flex.align-items-center(class=(other.active ? "disabled" : ""))
                                 img(src=`${other.image}`).user-image.pe-2
                                 span.pe-3= `${other.username}`
+
+    //- Stats container
+    div.container
+        div.row.mt-5
+            //- General
+            div.col-xl-4
+                div.card
+                    div.d-flex.align-items-center
+                        i.bi-graph-up-arrow.group-icon
+                        h5.m-0 General
+
+                    hr.mt-0.mb-0
+
+                    div.card-body.pt-0.pb-0
+                        each entry, index in stats.general
+                            div.row.entry
+                                div.d-flex.justify-content-between.align-items-center.mt-3
+                                    div.d-flex.justify-content-left.align-items-center
+                                        p.mb-3(data-bs-toggle="tooltip" data-bs-placement="top" title=`${entry.description}`)= entry.name
+                                        a(href="#").text-decoration-none
+                                            p.ms-2.mb-3.rank= entry.rank
+                                    p.text-secondary.mb-3= entry.value
+
+                            if (index < stats.general.length - 1)
+                                div.separator.m-0
+            //- Distance
+            div.col-xl-4
+                h5 Distance Travelled
+
+            //- Interactions
+            div.col-xl-4
+                h5 Interactions

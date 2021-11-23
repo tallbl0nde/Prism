@@ -24,12 +24,37 @@
     margin-bottom: 0.4em;
 }
 
+.entry {
+    transition: background-color 300ms ease-in-out;
+}
+
+.entry:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.group-icon {
+    font-size: 1.5em;
+    margin-left: 0.75em;
+    margin-right: 0.75em;
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
+}
+
+.main-image {
+    height: 2em;
+}
+
 .nav-link {
     color: rgba(0, 0, 0, 0.55)
 }
 
 .nav-link:hover {
     color: rgba(0, 0, 0, 0.75)
+}
+
+.rank {
+    color:rgb(180, 180, 180);
+    font-size: 0.85em;
 }
 
 #top-navbar {
