@@ -48,13 +48,13 @@ function getRank(uuid, category, key) {
 }
 
 // Returns the statistic value for the given category and key.
-// Null is returned if the key could not be found.
+// 0 is returned if the key could not be found.
 function getStatistic(json, category, key) {
     if (json.stats && json.stats[category] && json.stats[category][key]) {
         return json.stats[category][key];
     }
 
-    return null;
+    return 0;
 }
 
 // Gets the minecraft:custom statistic for the requested key
@@ -81,33 +81,68 @@ function recalculateRanks(categoryKeyPairs) {
     });
 
     // Get all user statistics
-    let stats = [];
+    let stats = {};
     uuids.forEach(uuid => {
         let tmp = readPlayerStatisticsFile(uuid);
         if (tmp !== null) {
-            stats.push(tmp);
+            stats[uuid] = tmp;
         }
     });
 
     // Abort with error if not all stats could be read
-    if (uuids.length != stats.length) {
+    if (uuids.length != Object.keys(stats).length) {
         throw new Error("Couldn't retrieve all player statistics");
     }
 
     // Don't do anything if all modified times are in the past
     let needsUpdate = false;
-    stats.forEach(stat => {
-        if (stat.modifiedTime > rankingTime) {
+    for (const uuid in stats) {
+        if (stats[uuid].modifiedTime > rankingTime) {
             needsUpdate = true;
         }
-    });
+    }
 
-    if (!needsUpdate) {
+    if (needsUpdate === false) {
         return;
     }
 
     // Otherwise proceed to ranking
+    ranks = {};
+    uuids.forEach(uuid => {
+        ranks[uuid] = {};
+    });
 
+    categoryKeyPairs.forEach(pair => {
+        // Get value of statistic for all users
+        let rankings = [];
+        Object.entries(stats).forEach(([key, value]) => {
+            // Add placeholder for category if needed
+            if (!ranks[key][pair.category]) {
+                ranks[key][pair.category] = {};
+            }
+
+            let stat = getStatistic(value.data, pair.category, pair.key);
+            rankings.push({
+                uuid: key,
+                value: stat
+            });
+        });
+
+        // Sort based on value
+        rankings = rankings.sort((a, b) => {
+            if (a.value > b.value) {
+                return -1;
+            } else if (a.value < b.value) {
+                return 1;
+            }
+            return 0;
+        });
+
+        // Assign ranks
+        for (let i = 0; i < rankings.length; i++) {
+            ranks[rankings[i].uuid][pair.category][pair.key] = i+1;
+        }
+    });
 }
 
 module.exports.getCustomStatistic = getCustomStatistic;
