@@ -21,11 +21,12 @@ function readPlayerStatisticsFile(uuid) {
     uuid = uuid.slice(0, 8) + "-" + uuid.slice(8, 12) + "-" + uuid.slice(12, 16) + "-" + uuid.slice(16, 20) + "-" + uuid.slice(20);
 
     // Read in data if not in cache or out of date
-    if (!fileCache[uuid] || fileCache[uuid].modifiedTime > new Date()) {
+    let tmp = path.join(config.statsDir, `${uuid}.json`);
+    let modifiedTime = fs.statSync(tmp).mtime;
+
+    if (!fileCache[uuid] || fileCache[uuid].modifiedTime < modifiedTime) {
         // Read file and modified time
-        let tmp = path.join(config.statsDir, `${uuid}.json`);
         let file = fs.readFileSync(tmp);
-        let modifiedTime = fs.statSync(tmp).mtime;
 
         // Insert/update entry
         fileCache[uuid] = {
@@ -70,6 +71,12 @@ function getCustomStatistic(uuid, key) {
         statistic: getStatistic(stats.data, "minecraft:custom", key),
         uuid: uuid
     };
+}
+
+// Gets the time a user's statistics were last updated.
+// This is usually the modified time of the file.
+function getUpdateTime(uuid) {
+    return readPlayerStatisticsFile(uuid).modifiedTime;
 }
 
 // Recalculates the ranking of statistics for all users given
@@ -146,4 +153,5 @@ function recalculateRanks(categoryKeyPairs) {
 }
 
 module.exports.getCustomStatistic = getCustomStatistic;
+module.exports.getUpdateTime = getUpdateTime;
 module.exports.recalculateRanks = recalculateRanks;

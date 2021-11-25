@@ -5,7 +5,7 @@ var router = express.Router();
 var User = require('../../../models/user');
 
 // GET /
-// Renders the main view, containing the dynmap iframe.
+// Renders the main view.
 router.get('/', function(req, res, next) {
     // Redirect to user's stats page if none provided
     if (req.query.uuid === undefined) {
@@ -36,6 +36,19 @@ router.get('/', function(req, res, next) {
         return res.redirect(`.?uuid=${req.user.uuid}`);
     }
 
+    // Update rankings
+    let categoryKeyPairs = [];
+    for (const category in config.stats) {
+        config.stats[category].forEach(entry => {
+            categoryKeyPairs.push({
+                category: "minecraft:custom",
+                key: entry.minecraftKey
+            });
+        });
+    };
+
+    minecraftStats.recalculateRanks(categoryKeyPairs);
+
     // Fetch statistics for user
     let stats = {};
     for (const category in config.stats) {
@@ -48,18 +61,71 @@ router.get('/', function(req, res, next) {
             if (entry.enabled === true) {
                 // Read statistics
                 let stat = minecraftStats.getCustomStatistic(res.locals.selected.uuid, entry.minecraftKey);
-                console.log(stat);
 
                 // Copy and update
                 stats[category].push(JSON.parse(JSON.stringify(entry)));
                 stats[category].at(-1).rank = `#${stat.rank}`;
-                stats[category].at(-1).value = entry.getString(stat.statistic || 0);
+                stats[category].at(-1).value = entry.getString(stat.statistic);
             }
         });
     }
+    let d = minecraftStats.getUpdateTime(res.locals.selected.uuid);
 
     res.locals.stats = stats;
+    res.locals.updateTime = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear().toString().padStart(2, "0").substr(-2)} ${d.getHours()}:${d.getMinutes().toString().padStart(2, "0")}`
     res.render('statistics/index');
+});
+
+// GET /rankings
+// Renders the ranking view.
+router.get('/rankings', function(req, res, next) {
+    // Redirect to user's stats page if none provided
+    if (req.query.key === undefined) {
+        return res.redirect(`.?uuid=${req.user.uuid}`);
+    }
+
+    // Update rankings
+    let categoryKeyPairs = [];
+    for (const category in config.stats) {
+        config.stats[category].forEach(entry => {
+            categoryKeyPairs.push({
+                category: "minecraft:custom",
+                key: entry.minecraftKey
+            });
+        });
+    };
+
+    minecraftStats.recalculateRanks(categoryKeyPairs);
+
+    // Populate dropdown box
+    // TODO: active
+    res.locals.statistics = {};
+    for (const category in config.stats) {
+        res.locals.statistics[category] = config.stats[category].map(entry => {
+            return {
+                name: entry.name,
+                key: entry.minecraftKey
+            };
+        });
+    }
+
+    // TODO: Redirect if key doesn't exist
+    // Get ranking data
+    res.locals.rankings = [];
+    User.findAll().forEach(user => {
+        res.locals.rankings.push(minecraftStats.getCustomStatistic(user.uuid, req.query.key));
+        res.locals.rankings.at(-1).uuid = user.username;
+    });
+    res.locals.rankings = res.locals.rankings.sort((a, b) => {
+        if (a.rank < b.rank) {
+            return -1;
+        } else if (a.rank > b.rank) {
+            return 1;
+        }
+        return 0;
+    });
+
+    res.render('statistics/rankings');
 });
 
 module.exports = router;

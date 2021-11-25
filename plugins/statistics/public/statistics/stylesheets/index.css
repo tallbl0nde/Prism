@@ -1,11 +1,12 @@
+body {
+    overflow-x: hidden;
+}
+
 .card {
     box-shadow: 0 0 10px rgb(230, 230, 230);
     transition: all 100ms ease-out;
 
     min-height: 8em;
-    left: 50%;
-    top: 50%;
-    transform: translateX(-50%) translateY(-50%);
 }
 
 .card > div {
@@ -24,12 +25,24 @@
     margin-bottom: 0.4em;
 }
 
+.dropdown-divider {
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+
 .entry {
+    padding-top: 0.6em;
+    padding-bottom: 0.6em;
     transition: background-color 300ms ease-in-out;
 }
 
 .entry:hover {
     background-color: rgba(0, 0, 0, 0.02);
+}
+
+.fill-height {
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .group-icon {
@@ -55,6 +68,19 @@
 .rank {
     color:rgb(180, 180, 180);
     font-size: 0.85em;
+}
+
+.scrollable {
+    height: 100%;
+}
+
+.sidelist {
+    background-color: rgb(245, 245, 245);
+}
+
+.sidelist > ul {
+    list-style-type: none;
+    padding-left: 0;
 }
 
 #top-navbar {
