@@ -60,10 +60,11 @@ router.get('/', function(req, res, next) {
             // Skip over disabled stats
             if (entry.enabled === true) {
                 // Read statistics
-                let stat = minecraftStats.getCustomStatistic(res.locals.selected.uuid, entry.minecraftKey);
+                let stat = minecraftStats.getCustomStatistic(res.locals.selected.uuid, entry.minecraftKey, entry.consists);
 
                 // Copy and update
                 stats[category].push(JSON.parse(JSON.stringify(entry)));
+                stats[category].at(-1).pseudo = (entry.consists !== undefined);
                 stats[category].at(-1).rank = `#${stat.rank}`;
                 stats[category].at(-1).value = entry.getString(stat.statistic);
             }

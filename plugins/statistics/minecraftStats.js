@@ -50,25 +50,43 @@ function getRank(uuid, category, key) {
 
 // Returns the statistic value for the given category and key.
 // 0 is returned if the key could not be found.
-function getStatistic(json, category, key) {
-    if (json.stats && json.stats[category] && json.stats[category][key]) {
-        return json.stats[category][key];
+function getStatistic(json, category, key, consists) {
+    // Inner function which reads from file
+    const readStatistic = function(json, category, key) {
+        if (json.stats && json.stats[category] && json.stats[category][key]) {
+            return json.stats[category][key];
+        }
+
+        return 0;
     }
 
-    return 0;
+    // Handle psuedo-statistics
+    if (key.slice(0, 6) === "prism:" && consists != null) {
+        let total = 0;
+
+        consists.forEach(key => {
+            total += readStatistic(json, category, key);
+        });
+
+        return total;
+
+    // Otherwise just read from file
+    } else {
+        return readStatistic(json, category, key)
+    }
 }
 
 // Gets the minecraft:custom statistic for the requested key
 // and player. Returns null if no statistic could be found.
 // Otherwise, an object containing the statistic and rank is
 // returned.
-function getCustomStatistic(uuid, key) {
+function getCustomStatistic(uuid, key, consists) {
     let stats = readPlayerStatisticsFile(uuid);
 
     return {
         key: key,
         rank: getRank(uuid, "minecraft:custom", key),
-        statistic: getStatistic(stats.data, "minecraft:custom", key),
+        statistic: getStatistic(stats.data, "minecraft:custom", key, consists),
         uuid: uuid
     };
 }

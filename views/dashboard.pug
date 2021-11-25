@@ -8,70 +8,70 @@ block content
     div.d-flex.flex-column.p-3.text-white.bg-dark#sidebar(class=(sidebarSize == "small" ? "content-lg" : "content-sm"))
         //- Heading
         a(href="/").d-flex.justify-content-center#logo-container
-            img(src="/images/logo_small.png").sidebar-sm.logo(class=(sidebarSize != "small" ? "d-none" : ""))
-            img(src="/images/logo.png").sidebar-lg.logo(class=(sidebarSize != "large" ? "d-none" : ""))
-        h6.sidebar-lg(class=(sidebarSize != "large" ? "d-none" : ""))#server-name= serverName
-        h6.sidebar-sm(class=(sidebarSize != "small" ? "d-none" : ""))#server-name= shortServerName
+            img.sidebar-sm.logo(src="/images/logo_small.png", class=(sidebarSize != "small" && "d-none"))
+            img.sidebar-lg.logo(src="/images/logo.png", class=(sidebarSize != "large" && "d-none"))
+        h6.sidebar-lg#server-name(class=(sidebarSize != "large" && "d-none"))= serverName
+        h6.sidebar-sm#server-name(class=(sidebarSize != "small" && "d-none"))= shortServerName
         hr
 
         //- User links
         ul.nav.nav-pills.flex-column.mb-auto
             for plugin in plugins
                 li.nav-item
-                    a(href=plugin.path).sidebar-sm-tooltip.nav-link.text-white(class=plugin.active ? "active" : "" data-bs-toggle="tooltip" data-bs-placement="right" title=`${plugin.name}`)
+                    a.sidebar-sm-tooltip.nav-link.text-white(href=plugin.path, class=(plugin.active && "active"), data-bs-toggle="tooltip", data-bs-placement="right", title=`${plugin.name}`)
                         i(class=plugin.icon)
-                        span.icon-separator.sidebar-lg(class=(sidebarSize != "large" ? "d-none" : ""))
-                        span.sidebar-lg(class=(sidebarSize != "large" ? "d-none" : ""))= plugin.name
+                        span.icon-separator.sidebar-lg(class=(sidebarSize != "large" && "d-none"))
+                        span.sidebar-lg(class=(sidebarSize != "large" && "d-none"))= plugin.name
 
         //- Admin links
         if user.isAdmin
             hr
             ul.nav.nav-pills.flex-column
                 li.nav-item
-                    a(href="/admin/statistics/").sidebar-sm-tooltip.nav-link.text-white(class=(adminPage === "statistics") ? "active" : "" data-bs-toggle="tooltip" data-bs-placement="right" title="Server Statistics")
+                    a.sidebar-sm-tooltip.nav-link.text-white(href="/admin/statistics/", class=(adminPage === "statistics" && "active"), data-bs-toggle="tooltip", data-bs-placement="right", title="Server Statistics")
                         i.bi-clipboard-data
-                        span.icon-separator.sidebar-lg(class=(sidebarSize != "large" ? "d-none" : ""))
-                        span.sidebar-lg(class=(sidebarSize != "large" ? "d-none" : "")) Server Statistics
-                    a(href="/admin/users/").sidebar-sm-tooltip.nav-link.text-white(class=(adminPage === "users") ? "active" : "" data-bs-toggle="tooltip" data-bs-placement="right" title="User Management")
+                        span.icon-separator.sidebar-lg(class=(sidebarSize != "large" && "d-none"))
+                        span.sidebar-lg(class=(sidebarSize != "large" && "d-none")) Server Statistics
+                    a.sidebar-sm-tooltip.nav-link.text-white(href="/admin/users/", class=(adminPage === "users" && "active"), data-bs-toggle="tooltip", data-bs-placement="right", title="User Management")
                         i.bi-people
-                        span.icon-separator.sidebar-lg(class=(sidebarSize != "large" ? "d-none" : ""))
-                        span.sidebar-lg(class=(sidebarSize != "large" ? "d-none" : "")) User Management
+                        span.icon-separator.sidebar-lg(class=(sidebarSize != "large" && "d-none"))
+                        span.sidebar-lg(class=(sidebarSize != "large" && "d-none")) User Management
         hr
 
         //- Account (expanded sidebar)
-        div.sidebar-lg(class=(sidebarSize != "large" ? "d-none" : ""))
+        div.sidebar-lg(class=(sidebarSize != "large" && "d-none"))
             div.d-flex.align-items-center
                 a(href="/account/")
-                    img(src=user.image).rounded-circle#avatar(data-bs-toggle="tooltip" data-bs-placement="right" title="Account")
+                    img.rounded-circle#avatar(src=user.image, data-bs-toggle="tooltip", data-bs-placement="right", title="Account")
                 span.icon-separator
                 span.w-100
                     strong= user.username
                     div.d-flex.justify-content-between
-                        a(href="/logout" style="margin-right: 0.4em").account-button.text-decoration-none
-                            i(style="margin-right: 0.3em").bi-power
+                        a.account-button.text-decoration-none(href="/logout", style="margin-right: 0.4em")
+                            i.bi-power(style="margin-right: 0.3em")
                             span(style="font-size: 0.8em") Logout
-                        a(href="#" onclick="toggleSidebar(true)").account-button(data-bs-toggle="tooltip" data-bs-placement="right" title="Collapse")
+                        a.account-button(href="#", onclick="toggleSidebar(true)", data-bs-toggle="tooltip", data-bs-placement="right", title="Collapse")
                             i.bi-chevron-bar-left
 
         //- Account (collapsed sidebar)
-        div.sidebar-sm(class=(sidebarSize != "small" ? "d-none" : ""))
+        div.sidebar-sm(class=(sidebarSize != "small" && "d-none"))
             div.d-flex.justify-content-center
                 a(href="/account/")
-                    img(src=user.image).rounded-circle#avatar(data-bs-toggle="tooltip" data-bs-placement="right" title="Account")
-            div(style="margin-top: 0.5em").d-flex.justify-content-around
-                a(href="/logout").account-button(data-bs-toggle="tooltip" data-bs-placement="right" title="Logout")
+                    img.rounded-circle#avatar(src=user.image, data-bs-toggle="tooltip", data-bs-placement="right", title="Account")
+            div.d-flex.justify-content-around(style="margin-top: 0.5em")
+                a.account-button(href="/logout", data-bs-toggle="tooltip", data-bs-placement="right", title="Logout")
                     i.bi-power
-                a(href="#" onclick="toggleSidebar(true)").account-button(data-bs-toggle="tooltip" data-bs-placement="right" title="Expand")
+                a.account-button(href="#" onclick="toggleSidebar(true)", data-bs-toggle="tooltip", data-bs-placement="right", title="Expand")
                     i.bi-chevron-bar-right
 
         //- Storage
-        div(style="margin-top: 0.7em").sidebar-lg(class=(sidebarSize != "large" ? "d-none" : ""))
+        div.sidebar-lg(style="margin-top: 0.7em", class=(sidebarSize != "large" && "d-none"))
             div#storage.d-flex.align-items-center
                 span
                     i.bi-hdd
                 div.progress.w-100
-                    div(style="width: " + user.usage.percentage + "%;").progress-bar
-                        span(data-bs-toggle="tooltip" data-bs-placement="right" title=user.usage.string style="font-size: 90%").progress-label= `${user.usage.percentage}%`
+                    div.progress-bar(style=`width: ${user.usage.percentage}%`)
+                        span.progress-label(data-bs-toggle="tooltip", data-bs-placement="right", title=user.usage.string, style="font-size: 90%")= `${user.usage.percentage}%`
 
     div#pluginContent(class=(sidebarSize == "small" ? "content-lg" : "content-sm"))
         block pluginContent
