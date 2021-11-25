@@ -146,7 +146,7 @@ function recalculateRanks(categoryKeyPairs) {
                 ranks[key][pair.category] = {};
             }
 
-            let stat = getStatistic(value.data, pair.category, pair.key);
+            let stat = getStatistic(value.data, pair.category, pair.key, pair.consists);
             rankings.push({
                 uuid: key,
                 value: stat
@@ -164,8 +164,15 @@ function recalculateRanks(categoryKeyPairs) {
         });
 
         // Assign ranks
+        let lastValue = null;
+        let nextRank = 0;
         for (let i = 0; i < rankings.length; i++) {
-            ranks[rankings[i].uuid][pair.category][pair.key] = i+1;
+            if (lastValue != rankings[i].value) {
+                nextRank++;
+            }
+
+            ranks[rankings[i].uuid][pair.category][pair.key] = nextRank;
+            lastValue = rankings[i].value;
         }
     });
 }

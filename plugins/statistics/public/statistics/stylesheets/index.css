@@ -2,6 +2,10 @@ body {
     overflow-x: hidden;
 }
 
+.bold {
+    font-weight: 600;
+}
+
 .card {
     box-shadow: 0 0 10px rgb(230, 230, 230);
     transition: all 100ms ease-out;
@@ -83,6 +87,10 @@ body {
     padding-left: 0;
 }
 
+.username {
+    color: black;
+}
+
 #top-navbar {
     border-bottom: lightgray 1px solid;
 }
@@ -92,4 +100,16 @@ body {
     max-height: 100%;
     max-width: 100%;
     text-align: center;
+}
+
+.gold {
+    color: goldenrod;
+}
+
+.silver {
+    color: silver;
+}
+
+.bronze {
+    color: chocolate;
 }

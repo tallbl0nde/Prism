@@ -42,7 +42,8 @@ router.get('/', function(req, res, next) {
         config.stats[category].forEach(entry => {
             categoryKeyPairs.push({
                 category: "minecraft:custom",
-                key: entry.minecraftKey
+                key: entry.minecraftKey,
+                consists: entry.consists
             });
         });
     };
@@ -72,6 +73,7 @@ router.get('/', function(req, res, next) {
     }
     let d = minecraftStats.getUpdateTime(res.locals.selected.uuid);
 
+    res.locals.categoryIcons = config.categoryIcons;
     res.locals.stats = stats;
     res.locals.updateTime = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear().toString().padStart(2, "0").substr(-2)} ${d.getHours()}:${d.getMinutes().toString().padStart(2, "0")}`
     res.render('statistics/index');
@@ -91,32 +93,55 @@ router.get('/rankings', function(req, res, next) {
         config.stats[category].forEach(entry => {
             categoryKeyPairs.push({
                 category: "minecraft:custom",
-                key: entry.minecraftKey
+                key: entry.minecraftKey,
+                consists: entry.consists
             });
         });
     };
 
     minecraftStats.recalculateRanks(categoryKeyPairs);
 
-    // Populate dropdown box
-    // TODO: active
+    // Populate list
     res.locals.statistics = {};
     for (const category in config.stats) {
         res.locals.statistics[category] = config.stats[category].map(entry => {
             return {
                 name: entry.name,
-                key: entry.minecraftKey
+                key: entry.minecraftKey,
+                active: (entry.minecraftKey === req.query.key)
             };
         });
     }
 
-    // TODO: Redirect if key doesn't exist
+    // Get entry for key
+    let current = null;
+    for (const category in config.stats) {
+        config.stats[category].forEach(entry => {
+            if (entry.minecraftKey === req.query.key) {
+                current = entry;
+            }
+        });
+    }
+
+    // Redirect if not valid key
+    if (current === null) {
+        return res.redirect(`.?uuid=${req.user.uuid}`);
+    }
+
     // Get ranking data
+    res.locals.categoryIcons = config.categoryIcons;
+    res.locals.description = current.description;
+    res.locals.name = current.name;
     res.locals.rankings = [];
+
     User.findAll().forEach(user => {
-        res.locals.rankings.push(minecraftStats.getCustomStatistic(user.uuid, req.query.key));
-        res.locals.rankings.at(-1).uuid = user.username;
+        let stat = minecraftStats.getCustomStatistic(user.uuid, current.minecraftKey, current.consists);
+        res.locals.rankings.push(stat);
+        res.locals.rankings.at(-1).statistic = current.getString(stat.statistic);
+        res.locals.rankings.at(-1).username = user.username;
+        res.locals.rankings.at(-1).uuid = user.uuid;
     });
+
     res.locals.rankings = res.locals.rankings.sort((a, b) => {
         if (a.rank < b.rank) {
             return -1;

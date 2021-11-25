@@ -1,0 +1,76 @@
+extends ../../../../views/dashboard
+
+block pluginStylesheets
+    link(rel="stylesheet" href="/statistics/stylesheets/index.css")
+
+block pluginContent
+    nav.navbar.navbar-light.bg-light.sticky-top#top-navbar
+        div.container-fluid.d-flex.align-items-center.justify-content-between
+            div.d-flex.align-items-center
+                span.navbar-brand.h1.m-0 Statistics Leaderboard
+
+    //- Side list of statistics
+    div.h-100
+        div.row
+            div.col-auto.pe-0
+                div.sidelist.fill-height#sidelist
+                    div.d-flex.justify-content-center
+                        a.dropdown-header.pt-3.text-decoration-none#back-button(href="#", onclick="clearScroll()")
+                            i.bi-arrow-left-circle.text-primary.pe-2
+                            span.text-primary Back to Player Statistics
+                    ul
+                        for entries, category in statistics
+                            li
+                                hr.dropdown-divider
+                            li
+                                div.d-flex.align-items-center(style="padding-left: 1rem")
+                                    i.text-secondary(class=categoryIcons[category])
+                                    h6.dropdown-header.text-capitalize.ps-2= category
+                            for entry in entries
+                                li
+                                    a.dropdown-item.d-flex.align-items-center(href=`/statistics/rankings?key=${entry.key}`, class=(entry.active ? "disabled" : ""))
+                                        span.pe-3= `${entry.name}`
+
+
+            //- Stats container
+            div.col.fill-height
+                div.container
+                    div.row.pt-4.pb-4
+                        div.col-xl-3
+                        div.col-xl-6
+                            div.card
+                                div.d-flex.align-items-center
+                                    i.bi-bar-chart-line.group-icon
+                                    h5.m-0= name
+                                    i.bi-info-circle.text-secondary.ps-2(data-bs-toggle="tooltip", data-bs-placement="top", title=`${description}`)
+
+                                hr.mt-0.mb-0
+
+                                div.card-body.pt-0.pb-0
+                                    for ranking, index in rankings
+                                        div.row.entry
+                                            div.col-1.pe-0
+                                                div.d-flex.justify-content-center
+                                                    if (ranking.rank === 1)
+                                                        i.bi-trophy-fill.gold
+                                                    else if (ranking.rank === 2)
+                                                        i.bi-trophy-fill.silver
+                                                    else if (ranking.rank === 3)
+                                                        i.bi-trophy-fill.bronze
+                                                    else
+                                                        span.text-secondary(class=(user.uuid == ranking.uuid && "bold"))= `#${ranking.rank}`
+
+                                            div.col-5
+                                                a.text-decoration-none.username(href=`/statistics?uuid=${ranking.uuid}`)
+                                                    span.me-2(class=(user.uuid == ranking.uuid && "bold"))= ranking.username
+
+                                            div.col-6
+                                                div.d-flex.justify-content-end
+                                                    span.me-2.text-secondary(class=(user.uuid == ranking.uuid && "bold"))= ranking.statistic
+
+                                        if (index < rankings.length - 1)
+                                            div.separator.m-0
+
+                        div.col-xl-3
+
+    script(src="/statistics/javascripts/index.js")

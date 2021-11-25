@@ -17,7 +17,7 @@ block pluginContent
     div.h-100
         div.row
             div.col-auto.pe-0
-                div.sidelist.fill-height
+                div.sidelist.fill-height#sidelist
                     ul
                         li
                             h6.dropdown-header You
@@ -39,68 +39,26 @@ block pluginContent
             div.col.fill-height
                 div.container
                     div.row.row-cols-sm-1.row-cols-lg-2.row-cols-xl-3.pt-4.pb-4
-                        //- General
-                        div.col
-                            div.card
-                                div.d-flex.align-items-center
-                                    i.bi-graph-up-arrow.group-icon
-                                    h5.m-0 General
+                        for entries, category in stats
+                            div.col
+                                div.card
+                                    div.d-flex.align-items-center
+                                        i.group-icon(class=categoryIcons[category])
+                                        h5.m-0.text-capitalize= category
 
-                                hr.mt-0.mb-0
+                                    hr.mt-0.mb-0
 
-                                div.card-body.pt-0.pb-0
-                                    each entry, index in stats.general
-                                        div.row.entry
-                                            div.d-flex.flex-wrap.justify-content-between.align-items-center
-                                                div.d-flex.justify-content-left.align-items-center
-                                                    p.mb-0(data-bs-toggle="tooltip", data-bs-placement="top", title=`${entry.description}`, class=(entry.pseudo && "fst-italic"))= entry.name
-                                                    a(href=`/statistics/rankings?key=${entry.minecraftKey}`).text-decoration-none
-                                                        p.ms-2.me-2.mb-0.rank= entry.rank
-                                                p.mb-0.text-secondary= entry.value
+                                    div.card-body.pt-0.pb-0
+                                        each entry, index in entries
+                                            div.row.entry
+                                                div.d-flex.flex-wrap.justify-content-between.align-items-center
+                                                    div.d-flex.justify-content-left.align-items-center
+                                                        p.mb-0(data-bs-toggle="tooltip", data-bs-placement="top", title=`${entry.description}`, class=(entry.pseudo && "fst-italic"))= entry.name
+                                                        a(href=`/statistics/rankings?key=${entry.minecraftKey}`, onclick="clearScroll()").text-decoration-none
+                                                            p.ms-2.me-2.mb-0.rank= entry.rank
+                                                    p.mb-0.text-secondary= entry.value
 
-                                        if (index < stats.general.length - 1)
-                                            div.separator.m-0
-                        //- Distance
-                        div.col
-                            div.card
-                                div.d-flex.align-items-center
-                                    i.bi-pin-map.group-icon
-                                    h5.m-0 Exploration
-
-                                hr.mt-0.mb-0
-
-                                div.card-body.pt-0.pb-0
-                                    each entry, index in stats.distance
-                                        div.row.entry
-                                            div.d-flex.flex-wrap.justify-content-between.align-items-center
-                                                div.d-flex.justify-content-left.align-items-center
-                                                    p.mb-0(data-bs-toggle="tooltip", data-bs-placement="top", title=`${entry.description}`, class=(entry.pseudo && "fst-italic"))= entry.name
-                                                    a(href=`/statistics/rankings?key=${entry.minecraftKey}`).text-decoration-none
-                                                        p.ms-2.me-2.mb-0.rank= entry.rank
-                                                p.mb-0.text-secondary= entry.value
-
-                                        if (index < stats.distance.length - 1)
-                                            div.separator.m-0
-                        //- Interactions
-                        div.col
-                            div.card
-                                div.d-flex.align-items-center
-                                    i.bi-hand-index.group-icon
-                                    h5.m-0 Interaction
-
-                                hr.mt-0.mb-0
-
-                                div.card-body.pt-0.pb-0
-                                    each entry, index in stats.interaction
-                                        div.row.entry
-                                            div.d-flex.flex-wrap.justify-content-between.align-items-center
-                                                div.d-flex.justify-content-left.align-items-center
-                                                    p.mb-0(data-bs-toggle="tooltip", data-bs-placement="top", title=`${entry.description}`, class=(entry.pseudo && "fst-italic"))= entry.name
-                                                    a(href=`/statistics/rankings?key=${entry.minecraftKey}`).text-decoration-none
-                                                        p.ms-2.me-2.mb-0.rank= entry.rank
-                                                p.mb-0.text-secondary= entry.value
-
-                                        if (index < stats.interaction.length - 1)
-                                            div.separator.m-0
+                                            if (index < entries.length - 1)
+                                                div.separator.m-0
 
     script(src="/statistics/javascripts/index.js")
