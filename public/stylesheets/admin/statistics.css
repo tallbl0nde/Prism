@@ -1,3 +1,7 @@
 body {
     overflow: hidden;
 }
+
+#pluginContent {
+    max-height: 100vh;
+}
